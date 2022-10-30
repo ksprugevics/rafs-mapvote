@@ -1,7 +1,7 @@
 if SERVER then
 
-    include('config_rafsmapvote.lua')
-    include('sv_utils.lua')
+    include('autorun/config_rafsmapvote.lua')
+    include('autorun/server/sv_utils.lua')
     
     -- Read config file
     settings = RafsMapvoteConfig()

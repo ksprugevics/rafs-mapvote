@@ -2,7 +2,7 @@ AddCSLuaFile()
 
 if CLIENT then
 
-    include('cl_fonts.lua')
+    include('autorun/client/cl_fonts.lua')
 
     -- Constants
     local UI_WIDTH = ScrW() * 0.75

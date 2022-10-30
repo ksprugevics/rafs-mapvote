@@ -2,8 +2,8 @@ AddCSLuaFile()
 
 if CLIENT then
 
-    include('cl_gui.lua')
-    include('config_rafsmapvote.lua')
+    include('autorun/client/cl_gui.lua')
+    include('autorun/config_rafsmapvote.lua')
 
     settings = RafsMapvoteConfig()
         

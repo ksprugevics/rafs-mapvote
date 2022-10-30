@@ -1,0 +1,11 @@
+{
+	"title"		:	"Raf's Map Vote",
+	"type"		:	"ServerContent",
+	"tags"		:	["realism" ],
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.svn*"
+	]
+}
