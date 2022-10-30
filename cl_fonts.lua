@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 if CLIENT then
 
     surface.CreateFont('TitleFont', {
