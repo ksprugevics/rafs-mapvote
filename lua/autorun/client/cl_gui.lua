@@ -75,15 +75,23 @@ if CLIENT then
     -- Button for random vote
     function CreateRandomButton()
         local RandomButton = vgui.Create('DButton', PANEL)
+        local xpos = (THUMBNAIL_WIDTH + 5) * 2 + 5
+        local ypos = STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5
         RandomButton:SetText('Random map')
         RandomButton:SetPos((THUMBNAIL_WIDTH + 5) * 2 + 5, STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5)
         RandomButton:SetSize(THUMBNAIL_WIDTH + 15, THUMBNAIL_HEIGHT / 3)
         RandomButton:SetTextColor(Color(255, 255, 255))
         RandomButton:SetFont('ButtonFont')
-        
         RandomButton.Paint = function(self, width, height)
             draw.RoundedBox(0, 0, 0, width, height, Color(50, 50, 50, 200))
         end
+
+        THUMBNAIL_COORDS['random'] = {
+            xpos,
+            ypos,
+            xpos + THUMBNAIL_WIDTH + 15 - AVATAR_THUMBNAIL_SIZE,
+            ypos + THUMBNAIL_HEIGHT / 3 - AVATAR_THUMBNAIL_SIZE
+        }
 
         RandomButton.DoClick = function ()
             PrintTable(playerVotes)
@@ -172,7 +180,6 @@ if CLIENT then
     end
     
     function RefreshAvatar(ply)
-
         local xmin = THUMBNAIL_COORDS[playerVotes[ply]][1]
         local ymin = THUMBNAIL_COORDS[playerVotes[ply]][2]
         local xmax = THUMBNAIL_COORDS[playerVotes[ply]][3] 

@@ -52,5 +52,4 @@ if CLIENT then
         bounceAvatars = {}
         avatarSpeed = {}
     end
-
 end

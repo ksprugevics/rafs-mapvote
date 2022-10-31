@@ -182,7 +182,7 @@ if SERVER then
         -- Tallies up votes
         for _, map in pairs(playerVotes) do
             if map == 'random' then
-                local randomVote = math.random(1, 6)
+                local randomVote = math.random(1, #allMaps)
                 mapVotes[allMaps[randomVote]] = mapVotes[allMaps[randomVote]] + 1
             elseif type(mapVotes[map]) == 'number' then
                 mapVotes[map] = mapVotes[map] + 1
