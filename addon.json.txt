@@ -1,0 +1,10 @@
+{
+	"title"		:	"Raf's Map Vote",
+	"type"		:	"ServerContent",
+	"tags"		:	["realism" ],
+	"ignore"	:
+	[
+		".git",
+		".vscode",
+	]
+}
