@@ -14,7 +14,7 @@ if CLIENT then
         font = 'Trebuchet24',
         extended = true,
         size = 30,
-        weight = 600,
+        weight = 800,
         antialias = true,
     })
 

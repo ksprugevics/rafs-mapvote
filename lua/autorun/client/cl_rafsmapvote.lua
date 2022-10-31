@@ -7,16 +7,17 @@ if CLIENT then
 
     settings = RafsMapvoteConfig()
         
-    allPlayers = player:GetAll()
-    maps = {}
-    mapVotes = {}
-    allAvatars = {}
     allPlayers = {}
+    allAvatars = {}
     allPos = {}
     playerVotes = {}
+    mapVotes = {}
+    maps = {}
     closed = false
 
     net.Receive('START_MAPVOTE', function(len)
+        closed = false
+        allPlayers = player:GetAll()
         maps = net.ReadTable()
         InitGUI()
     end)
@@ -28,18 +29,13 @@ if CLIENT then
         end
         
         local votes = net.ReadTable()
-
-        -- Update mapvotes
-        for _pl, _vote in pairs(votes) do
-            local prev_vote = playerVotes[_pl]
-
-            if _prevVote ~= _vote then
-
-                playerVotes[player] = _vote
-
+        for pl, vote in pairs(votes) do
+            local prev_vote = playerVotes[pl]
+            if prev_vote ~= vote then
+                playerVotes[pl] = vote
+                RefreshAvatar(pl)
             end
         end
-
     end)
 
     net.Receive('NEXT_MAP', function()
@@ -47,6 +43,7 @@ if CLIENT then
             return
         end
         local nextMap = net.ReadString()
+        
         TitleLabel:SetText('The winner is: ' .. nextMap)
         TitleLabel:SizeToContents()
 

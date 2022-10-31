@@ -24,35 +24,46 @@ if SERVER then
     local generatedMapList = nil
     local playerVotes = {}
     local nextMap = nil
+    local started = false
 
 
     -- Initiate mapvote
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
         if text == '!mapvote' then
-            -- Generates map candidates
-            candidates = GenerateCandidates(mapList, mapHistory, playerVotes)
 
-            -- Create a table that will contain player votes
-            local allPlayers = player:GetAll()
+            if started == false then
+                -- Generates map candidates
+                candidates = GenerateCandidates(mapList, mapHistory, playerVotes)
 
-            for key, player in pairs(allPlayers) do
-                playerVotes[player] = -1
-            end
-            
-            -- Sends candidates to the players
-            net.Start('START_MAPVOTE')
-            net.WriteTable(candidates)
-            net.Broadcast()
+                -- Create a table that will contain player votes
+                local allPlayers = player:GetAll()
 
-            -- Creates a voting period - timer
-            timer.Create('serverTime', settings['TIMER'], 1, function()
-                print('Vote time ended')
-
-                nextMap = TallyVotes(playerVotes, candidates)
-                net.Start('NEXT_MAP')
-                net.WriteString(nextMap)
+                for key, player in pairs(allPlayers) do
+                    playerVotes[player] = -1
+                end
+                
+                -- Sends candidates to the players
+                net.Start('START_MAPVOTE')
+                net.WriteTable(candidates)
                 net.Broadcast()
-            end)
+                started = true
+
+                -- Creates a voting period - timer
+                timer.Create('serverTime', settings['TIMER'], 1, function()
+                    print('Vote time ended')
+
+                    nextMap = TallyVotes(playerVotes, candidates)
+                    net.Start('NEXT_MAP')
+                    net.WriteString(nextMap)
+                    net.Broadcast()
+                    started = false
+                end)
+            else
+                net.Start('START_MAPVOTE')
+                net.WriteTable(candidates)
+                net.Broadcast()
+                RefreshVotes(playerVotes)
+            end
 
             -- local command = "changelevel " .. user_choice .. "\n"
             -- game.ConsoleCommand(command)
@@ -64,7 +75,7 @@ if SERVER then
 
         local userChoice = net.ReadString()
         playerVotes[ply] = userChoice
-        -- PrintTable(playerVotes)
+        PrintTable(playerVotes)
         RefreshVotes(playerVotes)
     end)
 
