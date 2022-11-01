@@ -1,5 +1,59 @@
 if SERVER then
 
+    -- Creates a default config file
+    function GenerateConfigFile(fullPath)
+        local settings = {}
+
+        -- Directory for storing maplist, history and thubmnails
+        -- !!! This is under the data/ directory!!!
+        -- True path example: garrysmod/data/rafsmapvote/
+        settings['DATA_DIR'] = 'rafsmapvote/'
+
+        -- Which maps to include in the map pool. Must be under garrysmod/maps/
+        -- (The map should actually be in the directory for it to show up)
+        -- Adding/removing maps requires a restart of the server or a manual re-run of the server script
+        settings['MAPS'] = {
+            'de_dust2',
+            'cs_office'
+        }
+
+        -- Place thumbnails here
+        -- !!! This is under the data/ directory!!!
+        -- True path example: garrysmod/data/rafsmapvote/thumbnails/
+        settings['THUMBNAIL_DIR'] = settings['DATA_DIR'] .. 'thumbnails/'
+    
+        -- Number of maps before a map can show up on the mapvote again
+        settings['MAP_COOLDOWN'] = 3
+    
+        -- Voting period in seconds
+        settings['TIMER'] = 20 + 1
+    
+        file.Write(fullPath, util.TableToJSON(settings))
+    end
+
+    function SetupDataDir()
+
+        local settings = {}
+        local dataPath = 'rafsmapvote/'
+        local configPath = dataPath .. 'config_rafsmapvote.json' 
+
+        -- Creates data directory
+        if not file.Exists(dataPath, 'DATA') then
+            file.CreateDir(dataPath)
+        end
+
+        if not file.Exists(configPath, 'DATA') then
+            print('[MAPVOTE] Config file not found, generating config..')
+            GenerateConfigFile(configPath)
+        end
+        
+        if not file.Exists(dataPath .. '/thumbnails', 'DATA') then
+            file.CreateDir(dataPath .. '/thumbnails')
+        end
+        
+        return util.JSONToTable(file.Read(configPath))
+    end
+
     -- Creates a file that counts the times a map has been played
     function GenerateMapList()
 
@@ -7,7 +61,6 @@ if SERVER then
         if file.Exists(settings['DATA_DIR'] .. 'maplist.json', 'DATA') then
             oldMapList = util.JSONToTable(file.Read(settings['DATA_DIR'] .. 'maplist.json', 'DATA'))
         end
-
 
         local localMaps = {}
         for _, v in pairs(file.Find('maps/*.bsp', 'GAME')) do

@@ -130,7 +130,8 @@ if CLIENT then
                                          ypos + THUMBNAIL_HEIGHT - AVATAR_THUMBNAIL_SIZE}
             MapVoteImage:SetSize(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
 
-            local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
+            --local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
+            local fileName = 'a.jpg'
             if file.Exists(fileName, 'data') then
                 MapVoteImage:SetImage('data/' .. fileName)
             else

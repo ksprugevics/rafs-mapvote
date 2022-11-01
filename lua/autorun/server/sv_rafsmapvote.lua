@@ -1,21 +1,20 @@
 if SERVER then
 
-    include('autorun/config_rafsmapvote.lua')
     include('autorun/server/sv_utils.lua')
     
-    -- Read config file
-    settings = RafsMapvoteConfig()
-
     -- Network strings
     util.AddNetworkString('MAP_CHOICE')
     util.AddNetworkString('START_MAPVOTE')
     util.AddNetworkString('REFRESH_VOTES')
     util.AddNetworkString('NEXT_MAP')
 
-    print('Generating map list')
+    print('[MAPVOTE] Importing config..')
+    settings = SetupDataDir()
+
+    print('[MAPVOTE] Generating map list..')
     GenerateMapList()
 
-    print('Generating map history')
+    print('[MAPVOTE] Generating map history..')
     GenerateMapHistory()
 
     -- Increase map's times played and add map to history
@@ -26,11 +25,11 @@ if SERVER then
     local nextMap = nil
     local started = false
 
+    print('[MAPVOTE] Fully loaded!')
 
     -- Initiate mapvote
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
         if text == '!mapvote' then
-
             if started == false then
                 -- Generates map candidates
                 candidates = GenerateCandidates(mapList, mapHistory, playerVotes)
@@ -42,6 +41,11 @@ if SERVER then
                     playerVotes[player] = -1
                 end
                 
+                -- Sends the client a copy of the config
+                net.Start('START_MAPVOTE')
+                net.WriteTable(candidates)
+                net.Broadcast()
+
                 -- Sends candidates to the players
                 net.Start('START_MAPVOTE')
                 net.WriteTable(candidates)
@@ -50,7 +54,7 @@ if SERVER then
 
                 -- Creates a voting period - timer
                 timer.Create('serverTime', settings['TIMER'], 1, function()
-                    print('Vote time ended')
+                    print('[MAPVOTE] Vote time ended')
 
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')
@@ -78,6 +82,4 @@ if SERVER then
         PrintTable(playerVotes)
         RefreshVotes(playerVotes)
     end)
-
-
 end
