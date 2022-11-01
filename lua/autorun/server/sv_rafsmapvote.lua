@@ -41,11 +41,6 @@ if SERVER then
                     playerVotes[player] = -1
                 end
                 
-                -- Sends the client a copy of the config
-                net.Start('START_MAPVOTE')
-                net.WriteTable(candidates)
-                net.Broadcast()
-
                 -- Sends candidates to the players
                 net.Start('START_MAPVOTE')
                 net.WriteTable(candidates)
