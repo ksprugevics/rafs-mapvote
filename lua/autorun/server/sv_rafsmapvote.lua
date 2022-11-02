@@ -3,42 +3,36 @@ if SERVER then
     include('autorun/server/sv_utils.lua')
     include('rmv_network_strings.lua')
     include('rmv_logging.lua')
+    include('rmv_file_gen.lua')
+    include('rmv_sv_utils.lua')
 
     -- Global constants
     CONFIG = {}
 
-    -- Local constants
-    local TABLE_LENGTH = 47
-
-
+    SetTableRowSize(80)
     PrintLogo()
-    PrintTableHeader(TABLE_LENGTH)
-    PrintTableRow("Importing config..", TABLE_LENGTH)
+    PrintTableHeader()
     CONFIG = SetupDataDir()
+    PrintTableRow('Config loaded')
 
-    PrintTableRow("Generating map list..", TABLE_LENGTH)
-    GenerateMapList()
+    PrintTableRow("Generating map list..")
+    local mapList = GenerateMapList(CONFIG['DATA_DIR'] .. 'map_list.json', CONFIG['MAPS'])
     
-    PrintTableRow("Generating map history..", TABLE_LENGTH)
-    GenerateMapHistory()
-
-    -- Increase map's times played and add map to history
-    local mapList = UpdateMapList()
-    local mapHistory = UpdateMapHistory()
+    PrintTableRow("Generating map history..")
+    local mapHistory = GenerateMapHistory(CONFIG['DATA_DIR'] .. 'map_history.json', CONFIG['MAP_COOLDOWN'])
+    local candidates = GenerateVoteCandidates(mapList, mapHistory)
     local generatedMapList = nil
     local playerVotes = {}
     local nextMap = nil
     local started = false
 
-    PrintTableRow("Fully loaded!", TABLE_LENGTH)
-    PrintTableFooter(TABLE_LENGTH)
+    PrintTableRow("Fully loaded!")
+    PrintTableFooter()
 
     -- Initiate mapvote
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
         if text == '!mapvote' then
             if started == false then
-                -- Generates map candidates
-                candidates = GenerateCandidates(mapList, mapHistory, playerVotes)
 
                 -- Create a table that will contain player votes
                 local allPlayers = player:GetAll()
@@ -77,10 +71,9 @@ if SERVER then
 
     -- Executes when a user votes
     net.Receive('MAP_CHOICE', function(len, ply)
-
         local userChoice = net.ReadString()
         playerVotes[ply] = userChoice
         PrintTable(playerVotes)
-        RefreshVotes(playerVotes)
+        SendVotesToClient(playerVotes)
     end)
 end

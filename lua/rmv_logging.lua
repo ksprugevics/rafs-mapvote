@@ -1,3 +1,5 @@
+local MAX_TABLE_ROW_LENGTH = 80
+
 function Log(text)
     local timestamp = os.date("%H:%M:%S: " , os.time())
     print("[Raf's Map Vote] " .. timestamp .. text)
@@ -12,24 +14,28 @@ function PrintLogo()
     print("                              |_|                   ")
 end
 
-function PrintTableHeader(tableRowMaxLength)
-    local row1 = " " .. string.rep("_", tableRowMaxLength + 4) .. " "
-    local row2 = "|  " .. string.rep("_", tableRowMaxLength) .. "  |"
-    local row3 = "| |" .. string.rep(" ", tableRowMaxLength) .. "| |"
+function SetTableRowSize(tableRowMaxLength)
+    MAX_TABLE_ROW_LENGTH = tableRowMaxLength
+end
+
+function PrintTableHeader()
+    local row1 = " " .. string.rep("_", MAX_TABLE_ROW_LENGTH + 4) .. " "
+    local row2 = "|  " .. string.rep("_", MAX_TABLE_ROW_LENGTH) .. "  |"
+    local row3 = "| |" .. string.rep(" ", MAX_TABLE_ROW_LENGTH) .. "| |"
     print(row1)
     print(row2)
     print(row3)
 end
 
-function PrintTableFooter(tableRowMaxLength)
-    local row1 = "| |" .. string.rep("_", tableRowMaxLength) .. "| |"    
-    local row2 = "|" .. string.rep("_", tableRowMaxLength + 4) .. "|"
+function PrintTableFooter()
+    local row1 = "| |" .. string.rep("_", MAX_TABLE_ROW_LENGTH) .. "| |"    
+    local row2 = "|" .. string.rep("_", MAX_TABLE_ROW_LENGTH + 4) .. "|"
     print(row1)
     print(row2)
 end
 
-function PrintTableRow(text, tableRowMaxLength)
-    local startingColumn = (tableRowMaxLength - string.len(text)) / 2
+function PrintTableRow(text)
+    local startingColumn = (MAX_TABLE_ROW_LENGTH - string.len(text)) / 2
     local row = "| |"
     row = row .. string.rep(" ", startingColumn)
     row = row .. text
@@ -38,10 +44,10 @@ function PrintTableRow(text, tableRowMaxLength)
     print(row)
 end
 
-function PrintTable(rows, tableRowMaxLength)
-    PrintTableHeader(tableRowMaxLength)
+function PrintCustomTable(rows)
+    PrintTableHeader(MAX_TABLE_ROW_LENGTH)
     for _, row in pairs(rows) do
-        PrintTableRow(row, tableRowMaxLength)
+        PrintTableRow(row, MAX_TABLE_ROW_LENGTH)
     end
-    PrintTableFooter(tableRowMaxLength)
+    PrintTableFooter(MAX_TABLE_ROW_LENGTH)
 end
