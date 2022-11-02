@@ -1,20 +1,25 @@
 if SERVER then
 
     include('autorun/server/sv_utils.lua')
-    
-    -- Network strings
-    util.AddNetworkString('MAP_CHOICE')
-    util.AddNetworkString('START_MAPVOTE')
-    util.AddNetworkString('REFRESH_VOTES')
-    util.AddNetworkString('NEXT_MAP')
+    include('rmv_network_strings.lua')
+    include('rmv_logging.lua')
 
-    print('[MAPVOTE] Importing config..')
-    settings = SetupDataDir()
+    -- Global constants
+    CONFIG = {}
 
-    print('[MAPVOTE] Generating map list..')
+    -- Local constants
+    local TABLE_LENGTH = 47
+
+
+    PrintLogo()
+    PrintTableHeader(TABLE_LENGTH)
+    PrintTableRow("Importing config..", TABLE_LENGTH)
+    CONFIG = SetupDataDir()
+
+    PrintTableRow("Generating map list..", TABLE_LENGTH)
     GenerateMapList()
-
-    print('[MAPVOTE] Generating map history..')
+    
+    PrintTableRow("Generating map history..", TABLE_LENGTH)
     GenerateMapHistory()
 
     -- Increase map's times played and add map to history
@@ -25,7 +30,8 @@ if SERVER then
     local nextMap = nil
     local started = false
 
-    print('[MAPVOTE] Fully loaded!')
+    PrintTableRow("Fully loaded!", TABLE_LENGTH)
+    PrintTableFooter(TABLE_LENGTH)
 
     -- Initiate mapvote
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
@@ -48,8 +54,8 @@ if SERVER then
                 started = true
 
                 -- Creates a voting period - timer
-                timer.Create('serverTime', settings['TIMER'], 1, function()
-                    print('[MAPVOTE] Vote time ended')
+                timer.Create('serverTime', CONFIG['TIMER'], 1, function()
+                    print('[Rafs Map Vote] Vote time ended')
 
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')

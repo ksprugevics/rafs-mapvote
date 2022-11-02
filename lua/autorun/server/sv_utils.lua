@@ -43,7 +43,7 @@ if SERVER then
         end
 
         if not file.Exists(configPath, 'DATA') then
-            print('[MAPVOTE] Config file not found, generating config..')
+            print('[Rafs Map Vote] Config file not found, generating config..')
             GenerateConfigFile(configPath)
         end
         
@@ -58,8 +58,8 @@ if SERVER then
     function GenerateMapList()
 
         local oldMapList = {}
-        if file.Exists(settings['DATA_DIR'] .. 'maplist.json', 'DATA') then
-            oldMapList = util.JSONToTable(file.Read(settings['DATA_DIR'] .. 'maplist.json', 'DATA'))
+        if file.Exists(CONFIG['DATA_DIR'] .. 'maplist.json', 'DATA') then
+            oldMapList = util.JSONToTable(file.Read(CONFIG['DATA_DIR'] .. 'maplist.json', 'DATA'))
         end
 
         local localMaps = {}
@@ -70,7 +70,7 @@ if SERVER then
         end
 
         local maps = {}
-        for _, v in pairs(settings['MAPS']) do
+        for _, v in pairs(CONFIG['MAPS']) do
             if localMaps[v] ~= nil then
                 maps[v] = 0
                 if oldMapList ~= nil then
@@ -81,43 +81,43 @@ if SERVER then
             end
         end
 
-        file.Write(settings['DATA_DIR'] .. 'maplist.json', util.TableToJSON(maps))
+        file.Write(CONFIG['DATA_DIR'] .. 'maplist.json', util.TableToJSON(maps))
     end
 
     -- Creates a file that keeps track of recently played maps and their remaining cooldown
     function GenerateMapHistory()
         local mapHistory = {}
         mapHistory[game.GetMap()] = 0
-        file.Write(settings['DATA_DIR'] .. 'maphistory.json', util.TableToJSON(mapHistory))
+        file.Write(CONFIG['DATA_DIR'] .. 'maphistory.json', util.TableToJSON(mapHistory))
     end
 
     -- Updates the map times played file
     function UpdateMapList()
         -- Reads map list and updates times played for current map
-        local mapList = util.JSONToTable(file.Read(settings['DATA_DIR'] .. 'maplist.json', 'DATA'))
+        local mapList = util.JSONToTable(file.Read(CONFIG['DATA_DIR'] .. 'maplist.json', 'DATA'))
         if mapList[game.GetMap()] ~= nil then
             mapList[game.GetMap()] = mapList[game.GetMap()] + 1
-            file.Write(settings['DATA_DIR'] .. 'maplist.json', util.TableToJSON(mapList))
+            file.Write(CONFIG['DATA_DIR'] .. 'maplist.json', util.TableToJSON(mapList))
         end
         return mapList
     end
 
     -- Updates the map history file
     function UpdateMapHistory()
-        local mapHistory = util.JSONToTable(file.Read(settings['DATA_DIR'] .. 'maphistory.json', 'DATA'))
+        local mapHistory = util.JSONToTable(file.Read(CONFIG['DATA_DIR'] .. 'maphistory.json', 'DATA'))
 
         -- Increment times played by 1
         for k, v in pairs(mapHistory) do
             mapHistory[k] = v + 1
 
             -- If a map has not been played for the cooldown amount of times it gets deleted from map history
-            if v == settings[''] then
+            if v == CONFIG[''] then
                 mapHistory[k] = nil
             end
         end
 
         mapHistory[game.GetMap()] = 0
-        file.Write(settings['DATA_DIR'] .. 'maphistory.json', util.TableToJSON(mapHistory))
+        file.Write(CONFIG['DATA_DIR'] .. 'maphistory.json', util.TableToJSON(mapHistory))
         return mapHistory
     end
 
