@@ -1,35 +1,37 @@
 if SERVER then
 
-    include('autorun/server/sv_utils.lua')
     include('rmv_network_strings.lua')
     include('rmv_logging.lua')
     include('rmv_file_gen.lua')
     include('rmv_sv_utils.lua')
 
-    -- Global constants
-    CONFIG = {}
-
-    SetTableRowSize(80)
-    PrintLogo()
-    PrintTableHeader()
-    CONFIG = SetupDataDir()
-    PrintTableRow('Config loaded')
-
-    PrintTableRow("Generating map list..")
-    local mapList = GenerateMapList(CONFIG['DATA_DIR'] .. 'map_list.json', CONFIG['MAPS'])
-    
-    PrintTableRow("Generating map history..")
-    local mapHistory = GenerateMapHistory(CONFIG['DATA_DIR'] .. 'map_history.json', CONFIG['MAP_COOLDOWN'])
-    local candidates = GenerateVoteCandidates(mapList, mapHistory)
-    local generatedMapList = nil
+    local config = {}
+    local candidates = {}
     local playerVotes = {}
     local nextMap = nil
     local started = false
 
-    PrintTableRow("Fully loaded!")
-    PrintTableFooter()
+    local function Initialize()
+        SetTableRowSize(80)
+        PrintLogo()
+        PrintTableHeader()
+        config = SetupDataDir()
+        PrintTableRow('Config loaded.')
 
-    -- Initiate mapvote
+        PrintTableRow('Generating map list..')
+        local mapList = GenerateMapList(config['DATA_DIR'] .. 'map_list.json', config['MAPS'])
+
+        PrintTableRow('Generating map history..')
+        local mapHistory = GenerateMapHistory(config['DATA_DIR'] .. 'map_history.json', config['MAP_COOLDOWN'])
+
+        PrintTableRow('Generating mapvote candidtes..')
+        candidates = GenerateVoteCandidates(mapList, mapHistory)
+
+        PrintTableRow("Fully loaded!")
+        PrintTableFooter()
+    end
+
+    -- Initiate mapvote//
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
         if text == '!mapvote' then
             if started == false then
@@ -46,11 +48,11 @@ if SERVER then
                 net.WriteTable(candidates)
                 net.Broadcast()
                 started = true
+                Log('Vote started.')
 
                 -- Creates a voting period - timer
-                timer.Create('serverTime', CONFIG['TIMER'], 1, function()
-                    print('[Rafs Map Vote] Vote time ended')
-
+                timer.Create('serverTime', config['TIMER'], 1, function()
+                    Log('Vote time ended.')
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')
                     net.WriteString(nextMap)
@@ -63,7 +65,8 @@ if SERVER then
                 net.Broadcast()
                 RefreshVotes(playerVotes)
             end
-
+            
+            Log('Changing map to: ' .. nextMap)
             -- local command = "changelevel " .. user_choice .. "\n"
             -- game.ConsoleCommand(command)
         end
@@ -76,4 +79,6 @@ if SERVER then
         PrintTable(playerVotes)
         SendVotesToClient(playerVotes)
     end)
+
+    Initialize()
 end

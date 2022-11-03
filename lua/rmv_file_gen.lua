@@ -57,7 +57,7 @@ if SERVER then
             PrintTableRow('Thumbnail directory not found, generating..')
             file.CreateDir(dataPath .. '/thumbnails')
         end
-        PrintTableRow('Thumbnail directory: ' .. fullPathPrefix .. dataPath .. 'thumbnails')
+        PrintTableRow('Thumbnail directory: ' .. fullPathPrefix .. dataPath .. 'thumbnails/')
         PrintTableRow('')
 
         if not file.Exists(configPath, 'DATA') then
