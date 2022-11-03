@@ -16,6 +16,8 @@ if CLIENT then
     AVATAR_INIT_SIZE = 32
     AVATAR_THUMBNAIL_SIZE = (THUMBNAIL_WIDTH - 65) / 12
     UPDATE_INTERVAL = 0.01
+    THUMBNAILS = {}
+    local selectedMap = nil
 
     PANEL = nil
 
@@ -75,15 +77,23 @@ if CLIENT then
     -- Button for random vote
     function CreateRandomButton()
         local RandomButton = vgui.Create('DButton', PANEL)
+        local xpos = (THUMBNAIL_WIDTH + 5) * 2 + 5
+        local ypos = STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5
         RandomButton:SetText('Random map')
         RandomButton:SetPos((THUMBNAIL_WIDTH + 5) * 2 + 5, STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5)
         RandomButton:SetSize(THUMBNAIL_WIDTH + 15, THUMBNAIL_HEIGHT / 3)
         RandomButton:SetTextColor(Color(255, 255, 255))
         RandomButton:SetFont('ButtonFont')
-        
         RandomButton.Paint = function(self, width, height)
             draw.RoundedBox(0, 0, 0, width, height, Color(50, 50, 50, 200))
         end
+
+        THUMBNAIL_COORDS['random'] = {
+            xpos,
+            ypos,
+            xpos + THUMBNAIL_WIDTH + 15,
+            ypos + THUMBNAIL_HEIGHT / 3
+        }
 
         RandomButton.DoClick = function ()
             PrintTable(playerVotes)
@@ -91,6 +101,24 @@ if CLIENT then
             net.WriteString('random')
             net.SendToServer()
         end
+    end
+
+    function CalculateThumbnailPositions()
+        for k, mapName in pairs(maps) do
+            local xpos = 0
+            local ypos = 0
+            if k < 4 then
+                xpos = STARTING_X + (THUMBNAIL_WIDTH + 5) * (k - 1)
+                ypos = STARTING_Y
+            else
+                xpos = STARTING_X + (THUMBNAIL_WIDTH + 5) * (k - 4)
+                ypos = STARTING_Y + THUMBNAIL_HEIGHT + 5
+            end
+            THUMBNAIL_COORDS[mapName] = {xpos, ypos,
+            xpos + THUMBNAIL_WIDTH,
+            ypos + THUMBNAIL_HEIGHT}
+        end
+
     end
 
     -- Map thumbnails
@@ -104,36 +132,54 @@ if CLIENT then
             MapLabel:SetTextColor(Color(255, 255, 255))
             MapLabel:SetFont('TextOverImageFont')
             MapLabel:SetSize(THUMBNAIL_WIDTH, 40)
-            
-            if k < 4 then
-                xpos = STARTING_X + (THUMBNAIL_WIDTH + 5) * (k - 1)
-                ypos = STARTING_Y
-                MapVoteImage:SetPos(xpos, ypos)
-                MapLabel:SetPos(xpos + 5, ypos + THUMBNAIL_HEIGHT - 40)
-            else
-                xpos = STARTING_X + (THUMBNAIL_WIDTH + 5) * (k - 4)
-                ypos = STARTING_Y + THUMBNAIL_HEIGHT + 5
-                MapVoteImage:SetPos(xpos, ypos)
-                MapLabel:SetPos(xpos + 5, ypos + THUMBNAIL_HEIGHT - 40)
-            end
-        
-            THUMBNAIL_COORDS[mapName] = {xpos, ypos,
-                                         xpos + THUMBNAIL_WIDTH - AVATAR_THUMBNAIL_SIZE,
-                                         ypos + THUMBNAIL_HEIGHT - AVATAR_THUMBNAIL_SIZE}
+
+            MapVoteImage:SetPos(THUMBNAIL_COORDS[mapName][1], THUMBNAIL_COORDS[mapName][2])
+            MapLabel:SetPos(THUMBNAIL_COORDS[mapName][1] + 5, THUMBNAIL_COORDS[mapName][2] + THUMBNAIL_HEIGHT - 40)
             MapVoteImage:SetSize(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
 
-            local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
+            --local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
+            local fileName = 'a.jpg'
             if file.Exists(fileName, 'data') then
                 MapVoteImage:SetImage('data/' .. fileName)
             else
                 MapVoteImage:SetMaterial('models/rendertarget')
             end
             
+            THUMBNAILS[mapName] = MapVoteImage
             MapVoteImage.DoClick = function()
+                selectedMap = mapName
+                RefreshThumbnails()
                 net.Start('MAP_CHOICE')
                 net.WriteString(mapName)
                 net.SendToServer()
             end
+        end
+    end
+
+    function RefreshThumbnails() 
+        for map, img in pairs(THUMBNAILS) do
+            if map == selectedMap then
+                img:SetPos(THUMBNAIL_COORDS[map][1] + 2, THUMBNAIL_COORDS[map][2] + 2)
+                img:SetSize(THUMBNAIL_WIDTH - 4, THUMBNAIL_HEIGHT - 4)
+            else
+                img:SetPos(THUMBNAIL_COORDS[map][1], THUMBNAIL_COORDS[map][2])
+                img:SetSize(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT)
+            end
+        end
+    end
+
+
+    function CreateThumbnailBackgrounds()
+        for _, map in pairs(maps) do
+            local panel = vgui.Create('DPanel')
+            
+            panel:SetPos(THUMBNAIL_COORDS[map][1], THUMBNAIL_COORDS[map][2])
+            panel:SetSize(THUMBNAIL_COORDS[map][3] - THUMBNAIL_COORDS[map][1], THUMBNAIL_COORDS[map][4] - THUMBNAIL_COORDS[map][2])
+            panel:SetParent(PANEL)
+            panel.Paint = function(self, width, height)
+                draw.RoundedBox(0, 0, 0, width, height, Color(0, 255, 255, 255))
+            end
+                
         end
     end
 
@@ -167,16 +213,17 @@ if CLIENT then
         CreateCloseButton()
         CreateTitleLabel('Vote for the next map:')
         CreateRandomButton()
+        CalculateThumbnailPositions()
+        CreateThumbnailBackgrounds()
         CreateMapThumbnails()
         CreateAvatarDock()
     end
     
     function RefreshAvatar(ply)
-
         local xmin = THUMBNAIL_COORDS[playerVotes[ply]][1]
         local ymin = THUMBNAIL_COORDS[playerVotes[ply]][2]
-        local xmax = THUMBNAIL_COORDS[playerVotes[ply]][3] 
-        local ymax = THUMBNAIL_COORDS[playerVotes[ply]][4]
+        local xmax = THUMBNAIL_COORDS[playerVotes[ply]][3] - AVATAR_THUMBNAIL_SIZE
+        local ymax = THUMBNAIL_COORDS[playerVotes[ply]][4] - AVATAR_THUMBNAIL_SIZE
         if allAvatars[ply] ~= nil then
             allAvatars[ply]:Remove()
             allAvatars[ply] = nil

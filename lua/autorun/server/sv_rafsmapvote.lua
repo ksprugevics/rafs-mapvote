@@ -1,39 +1,40 @@
 if SERVER then
 
-    include('autorun/config_rafsmapvote.lua')
-    include('autorun/server/sv_utils.lua')
-    
-    -- Read config file
-    settings = RafsMapvoteConfig()
+    include('rmv_network_strings.lua')
+    include('rmv_logging.lua')
+    include('rmv_file_gen.lua')
+    include('rmv_sv_utils.lua')
 
-    -- Network strings
-    util.AddNetworkString('MAP_CHOICE')
-    util.AddNetworkString('START_MAPVOTE')
-    util.AddNetworkString('REFRESH_VOTES')
-    util.AddNetworkString('NEXT_MAP')
-
-    print('Generating map list')
-    GenerateMapList()
-
-    print('Generating map history')
-    GenerateMapHistory()
-
-    -- Increase map's times played and add map to history
-    local mapList = UpdateMapList()
-    local mapHistory = UpdateMapHistory()
-    local generatedMapList = nil
+    local config = {}
+    local candidates = {}
     local playerVotes = {}
     local nextMap = nil
     local started = false
 
+    local function Initialize()
+        SetTableRowSize(80)
+        PrintLogo()
+        PrintTableHeader()
+        config = SetupDataDir()
+        PrintTableRow('Config loaded.')
 
-    -- Initiate mapvote
+        PrintTableRow('Generating map list..')
+        local mapList = GenerateMapList(config['DATA_DIR'] .. 'map_list.json', config['MAPS'])
+
+        PrintTableRow('Generating map history..')
+        local mapHistory = GenerateMapHistory(config['DATA_DIR'] .. 'map_history.json', config['MAP_COOLDOWN'])
+
+        PrintTableRow('Generating mapvote candidtes..')
+        candidates = GenerateVoteCandidates(mapList, mapHistory)
+
+        PrintTableRow("Fully loaded!")
+        PrintTableFooter()
+    end
+
+    -- Initiate mapvote//
     hook.Add('PlayerSay', 'MapVote', function(ply, text)
         if text == '!mapvote' then
-
             if started == false then
-                -- Generates map candidates
-                candidates = GenerateCandidates(mapList, mapHistory, playerVotes)
 
                 -- Create a table that will contain player votes
                 local allPlayers = player:GetAll()
@@ -47,11 +48,11 @@ if SERVER then
                 net.WriteTable(candidates)
                 net.Broadcast()
                 started = true
+                Log('Vote started.')
 
                 -- Creates a voting period - timer
-                timer.Create('serverTime', settings['TIMER'], 1, function()
-                    print('Vote time ended')
-
+                timer.Create('serverTime', config['TIMER'], 1, function()
+                    Log('Vote time ended.')
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')
                     net.WriteString(nextMap)
@@ -64,7 +65,8 @@ if SERVER then
                 net.Broadcast()
                 RefreshVotes(playerVotes)
             end
-
+            
+            Log('Changing map to: ' .. nextMap)
             -- local command = "changelevel " .. user_choice .. "\n"
             -- game.ConsoleCommand(command)
         end
@@ -72,12 +74,11 @@ if SERVER then
 
     -- Executes when a user votes
     net.Receive('MAP_CHOICE', function(len, ply)
-
         local userChoice = net.ReadString()
         playerVotes[ply] = userChoice
         PrintTable(playerVotes)
-        RefreshVotes(playerVotes)
+        SendVotesToClient(playerVotes)
     end)
 
-
+    Initialize()
 end

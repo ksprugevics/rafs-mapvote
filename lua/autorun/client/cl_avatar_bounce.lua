@@ -32,8 +32,8 @@ if CLIENT then
 
             local xmin = THUMBNAIL_COORDS[playerVotes[pl]][1]
             local ymin = THUMBNAIL_COORDS[playerVotes[pl]][2]
-            local xmax = THUMBNAIL_COORDS[playerVotes[pl]][3]
-            local ymax = THUMBNAIL_COORDS[playerVotes[pl]][4]
+            local xmax = THUMBNAIL_COORDS[playerVotes[pl]][3] - AVATAR_THUMBNAIL_SIZE
+            local ymax = THUMBNAIL_COORDS[playerVotes[pl]][4] - AVATAR_THUMBNAIL_SIZE
 
             if xpos>= xmax + 1 or xpos <= xmin - 1 then
                 xspeed = xspeed * -1;
@@ -52,5 +52,4 @@ if CLIENT then
         bounceAvatars = {}
         avatarSpeed = {}
     end
-
 end

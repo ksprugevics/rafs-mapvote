@@ -1,5 +1,6 @@
 {
-	"title"		:	"Raf's Map Vote",
+	"title"		:	"Raf's Mapvote",
+	"version"   :   "0.2",
 	"type"		:	"ServerContent",
 	"tags"		:	["realism" ],
 	"ignore"	:

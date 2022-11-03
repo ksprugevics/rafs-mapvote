@@ -3,9 +3,6 @@ AddCSLuaFile()
 if CLIENT then
 
     include('autorun/client/cl_gui.lua')
-    include('autorun/config_rafsmapvote.lua')
-
-    settings = RafsMapvoteConfig()
         
     allPlayers = {}
     allAvatars = {}
