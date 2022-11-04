@@ -1,10 +1,5 @@
 if SERVER then
-
-    include('rmv_network_strings.lua')
-    include('rmv_logging.lua')
-    include('rmv_file_gen.lua')
-    include('rmv_sv_utils.lua')
-
+    
     local config = {}
     local candidates = {}
     local playerVotes = {}
@@ -58,15 +53,15 @@ if SERVER then
                     net.WriteString(nextMap)
                     net.Broadcast()
                     started = false
+                    Log('Changing map to: ' .. nextMap)
                 end)
             else
                 net.Start('START_MAPVOTE')
                 net.WriteTable(candidates)
                 net.Broadcast()
-                RefreshVotes(playerVotes)
+                SendVotesToClient(playerVotes)
             end
             
-            Log('Changing map to: ' .. nextMap)
             -- local command = "changelevel " .. user_choice .. "\n"
             -- game.ConsoleCommand(command)
         end

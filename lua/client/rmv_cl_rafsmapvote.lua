@@ -1,9 +1,5 @@
-AddCSLuaFile()
-
 if CLIENT then
 
-    include('autorun/client/cl_gui.lua')
-        
     allPlayers = {}
     allAvatars = {}
     allPos = {}
@@ -12,6 +8,7 @@ if CLIENT then
     maps = {}
     closed = false
 
+    
     net.Receive('START_MAPVOTE', function(len)
         closed = false
         allPlayers = player:GetAll()

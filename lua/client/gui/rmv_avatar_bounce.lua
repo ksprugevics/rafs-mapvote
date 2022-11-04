@@ -1,17 +1,15 @@
-AddCSLuaFile()
-
 if CLIENT then
 
     local bounceAvatars = {}
     local avatarSpeed = {}
 
 
-    function InitAvatar(xmin, ymin, xmax, ymax, voter) 
+    function InitAvatar(xmin, ymin, xmax, ymax, avatarSize, voter) 
 
         local PlayerAvatar = bounceAvatars[voter]
         if  PlayerAvatar == nil then
             PlayerAvatar = vgui.Create('AvatarImage', PANEL)
-            PlayerAvatar:SetSize(AVATAR_THUMBNAIL_SIZE, AVATAR_THUMBNAIL_SIZE)
+            PlayerAvatar:SetSize(avatarSize, avatarSize)
             PlayerAvatar:SetPlayer(voter, 64)
         end
         
@@ -23,17 +21,17 @@ if CLIENT then
         avatarSpeed[voter] = {xspeed, yspeed}
     end
 
-    function UpdateAvatars()
+    function UpdateAvatars(thumbnailCoords, avatarSize)
         for pl, av in pairs(bounceAvatars) do
 
             local xpos, ypos = av:GetPos()
             local xspeed = avatarSpeed[pl][1]
             local yspeed = avatarSpeed[pl][2]
 
-            local xmin = THUMBNAIL_COORDS[playerVotes[pl]][1]
-            local ymin = THUMBNAIL_COORDS[playerVotes[pl]][2]
-            local xmax = THUMBNAIL_COORDS[playerVotes[pl]][3] - AVATAR_THUMBNAIL_SIZE
-            local ymax = THUMBNAIL_COORDS[playerVotes[pl]][4] - AVATAR_THUMBNAIL_SIZE
+            local xmin = thumbnailCoords[playerVotes[pl]][1]
+            local ymin = thumbnailCoords[playerVotes[pl]][2]
+            local xmax = thumbnailCoords[playerVotes[pl]][3] - avatarSize
+            local ymax = thumbnailCoords[playerVotes[pl]][4] - avatarSize
 
             if xpos>= xmax + 1 or xpos <= xmin - 1 then
                 xspeed = xspeed * -1;
