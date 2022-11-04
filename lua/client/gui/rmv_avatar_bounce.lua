@@ -4,11 +4,15 @@ if CLIENT then
     local avatarSpeed = {}
 
 
-    function InitAvatar(xmin, ymin, xmax, ymax, avatarSize, voter) 
+    function InitAvatar(thumbnailCoords, avatarSize, voter) 
+        local xmin = thumbnailCoords[1]
+        local ymin = thumbnailCoords[2]
+        local xmax = thumbnailCoords[3] - avatarSize
+        local ymax = thumbnailCoords[4] - avatarSize
 
         local PlayerAvatar = bounceAvatars[voter]
         if  PlayerAvatar == nil then
-            PlayerAvatar = vgui.Create('AvatarImage', PANEL)
+            PlayerAvatar = vgui.Create('AvatarImage', RMV_MAPVOTE_PANEL)
             PlayerAvatar:SetSize(avatarSize, avatarSize)
             PlayerAvatar:SetPlayer(voter, 64)
         end
@@ -23,15 +27,14 @@ if CLIENT then
 
     function UpdateAvatars(thumbnailCoords, avatarSize)
         for pl, av in pairs(bounceAvatars) do
-
             local xpos, ypos = av:GetPos()
             local xspeed = avatarSpeed[pl][1]
             local yspeed = avatarSpeed[pl][2]
 
-            local xmin = thumbnailCoords[playerVotes[pl]][1]
-            local ymin = thumbnailCoords[playerVotes[pl]][2]
-            local xmax = thumbnailCoords[playerVotes[pl]][3] - avatarSize
-            local ymax = thumbnailCoords[playerVotes[pl]][4] - avatarSize
+            local xmin = thumbnailCoords[RMV_PLAYER_VOTES[pl]][1]
+            local ymin = thumbnailCoords[RMV_PLAYER_VOTES[pl]][2]
+            local xmax = thumbnailCoords[RMV_PLAYER_VOTES[pl]][3] - avatarSize
+            local ymax = thumbnailCoords[RMV_PLAYER_VOTES[pl]][4] - avatarSize
 
             if xpos>= xmax + 1 or xpos <= xmin - 1 then
                 xspeed = xspeed * -1;

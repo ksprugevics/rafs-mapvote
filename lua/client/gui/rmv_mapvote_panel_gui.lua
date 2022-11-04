@@ -1,6 +1,6 @@
 if CLIENT then
 
-    PANEL = nil
+    RMV_MAPVOTE_PANEL = nil
 
     -- Positions
     local GUI_STARTING_X = 5
@@ -24,8 +24,10 @@ if CLIENT then
 
     -- Variables
     local thumbnails = {}
+    local allAvatars = {}
     local selectedMap = nil
 
+    
     -- Main panel
     function CreateMainPanel()
         local Frame = vgui.Create('DFrame')
@@ -43,12 +45,12 @@ if CLIENT then
             draw.RoundedBox(0, GUI_STARTING_X - 15, GUI_STARTING_Y - 5, _w + 15, GUI_THUMBNAIL_HEIGHT * 2 + 15, GUI_BASE_PANEL_COLOR)
             draw.RoundedBox(0, GUI_STARTING_X - 15, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5, (GUI_THUMBNAIL_WIDTH + 10) * 2, GUI_THUMBNAIL_HEIGHT / 3, GUI_BASE_PANEL_COLOR)
         end
-        PANEL = Frame
+        RMV_MAPVOTE_PANEL = Frame
     end
 
     -- Close button
     function CreateCloseButton()
-        local CloseButton = vgui.Create('DButton', PANEL)
+        local CloseButton = vgui.Create('DButton', RMV_MAPVOTE_PANEL)
         CloseButton:SetText('X')
         CloseButton:SetPos(GUI_UI_WIDTH - 40, 0)
         CloseButton:SetTextColor(GUI_BASE_TEXT_COLOR)
@@ -62,15 +64,15 @@ if CLIENT then
         CloseButton.DoClick = function()
             ticker = CurTime()
             DeleteAvatars()
-            PANEL:Clear()
-            PANEL:Close()
-            closed = true
+            RMV_MAPVOTE_PANEL:Clear()
+            RMV_MAPVOTE_PANEL:Close()
+            RMV_CLOSED = true
         end
     end
 
     -- Title label
     function CreateTitleLabel(text)
-        TitleLabel = vgui.Create('DLabel', PANEL)
+        TitleLabel = vgui.Create('DLabel', RMV_MAPVOTE_PANEL)
         TitleLabel:SetText(text)
         TitleLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
         TitleLabel:SetFont('TitleFont')
@@ -80,7 +82,7 @@ if CLIENT then
 
     -- Button for random vote
     function CreateRandomButton()
-        local RandomButton = vgui.Create('DButton', PANEL)
+        local RandomButton = vgui.Create('DButton', RMV_MAPVOTE_PANEL)
         local xpos = (GUI_THUMBNAIL_WIDTH + 5) * 2 + 5
         local ypos = GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5
         RandomButton:SetText('Random map')
@@ -95,42 +97,25 @@ if CLIENT then
         GUI_THUMBNAIL_COORDS['random'] = {
             xpos,
             ypos,
-            xpos + GUI_THUMBNAIL_WIDTH + 15,
+            xpos + GUI_THUMBNAIL_WIDTH,
             ypos + GUI_THUMBNAIL_HEIGHT / 3
         }
 
-        RandomButton.DoClick = function ()
-            PrintTable(playerVotes)
+        RandomButton.DoClick = function()
+            selectedMap = 'random'
+            RefreshThumbnails()
             net.Start('MAP_CHOICE')
             net.WriteString('random')
             net.SendToServer()
         end
     end
 
-    function CalculateThumbnailPositions()
-        for k, mapName in pairs(maps) do
-            local xpos = 0
-            local ypos = 0
-            if k < 4 then
-                xpos = GUI_STARTING_X + (GUI_THUMBNAIL_WIDTH + 5) * (k - 1)
-                ypos = GUI_STARTING_Y
-            else
-                xpos = GUI_STARTING_X + (GUI_THUMBNAIL_WIDTH + 5) * (k - 4)
-                ypos = GUI_STARTING_Y + GUI_THUMBNAIL_HEIGHT + 5
-            end
-            GUI_THUMBNAIL_COORDS[mapName] = {xpos, ypos,
-            xpos + GUI_THUMBNAIL_WIDTH,
-            ypos + GUI_THUMBNAIL_HEIGHT}
-        end
-
-    end
-
     -- Map thumbnails
     function CreateMapThumbnails()
-        for k, mapName in pairs(maps) do
+        for k, mapName in pairs(RMV_MAPS) do
     
-            local MapVoteImage = vgui.Create('DImageButton', PANEL)
-            local MapLabel = vgui.Create('DLabel', PANEL)
+            local MapVoteImage = vgui.Create('DImageButton', RMV_MAPVOTE_PANEL)
+            local MapLabel = vgui.Create('DLabel', RMV_MAPVOTE_PANEL)
 
             MapLabel:SetText(mapName)
             MapLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
@@ -162,24 +147,22 @@ if CLIENT then
 
     function RefreshThumbnails() 
         for map, img in pairs(thumbnails) do
+            img:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
+            img:SetSize(GUI_THUMBNAIL_WIDTH, GUI_THUMBNAIL_HEIGHT)
             if map == selectedMap then
                 img:SetPos(GUI_THUMBNAIL_COORDS[map][1] + 2, GUI_THUMBNAIL_COORDS[map][2] + 2)
                 img:SetSize(GUI_THUMBNAIL_WIDTH - 4, GUI_THUMBNAIL_HEIGHT - 4)
-            else
-                img:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
-                img:SetSize(GUI_THUMBNAIL_WIDTH, GUI_THUMBNAIL_HEIGHT)
             end
         end
     end
 
-
     function CreateThumbnailBackgrounds()
-        for _, map in pairs(maps) do
+        for _, map in pairs(RMV_MAPS) do
             local panel = vgui.Create('DPanel')
             
             panel:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
             panel:SetSize(GUI_THUMBNAIL_COORDS[map][3] - GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][4] - GUI_THUMBNAIL_COORDS[map][2])
-            panel:SetParent(PANEL)
+            panel:SetParent(RMV_MAPVOTE_PANEL)
             panel.Paint = function(self, _w, _h)
                 draw.RoundedBox(0, 0, 0, _w, _h, Color(0, 255, 255, 255))
             end
@@ -192,14 +175,14 @@ if CLIENT then
        -- Initial position of avatars
        local xposCounter, yposCounter = GUI_STARTING_X, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 10
        local counter = 1
-       for key, p in pairs(allPlayers) do
-           playerVotes[p] = -1
-           local avatar = vgui.Create('AvatarImage', PANEL)
+       for key, p in pairs(RMV_ALL_PLAYERS) do
+           RMV_PLAYER_VOTES[p] = -1
+           local avatar = vgui.Create('AvatarImage', RMV_MAPVOTE_PANEL)
            avatar:SetSize(GUI_AVATAR_INIT_SIZE, GUI_AVATAR_INIT_SIZE)
            avatar:SetPos(xposCounter, yposCounter)
            avatar:SetPlayer(p, 32)
            avatar:SetTooltip(p:GetName())
-           avatar:SetParent(PANEL)
+           avatar:SetParent(RMV_MAPVOTE_PANEL)
            allAvatars[p] = avatar
 
            if counter == 18 then
@@ -210,6 +193,26 @@ if CLIENT then
            end
            counter = counter + 1
        end
+    end
+
+    function CalculateThumbnailPositions()
+        for k, mapName in pairs(RMV_MAPS) do
+            local xpos = 0
+            local ypos = 0
+            if k < 4 then
+                xpos = GUI_STARTING_X + (GUI_THUMBNAIL_WIDTH + 5) * (k - 1)
+                ypos = GUI_STARTING_Y
+            else
+                xpos = GUI_STARTING_X + (GUI_THUMBNAIL_WIDTH + 5) * (k - 4)
+                ypos = GUI_STARTING_Y + GUI_THUMBNAIL_HEIGHT + 5
+            end
+            
+            GUI_THUMBNAIL_COORDS[mapName] = {xpos,
+            ypos,
+            xpos + GUI_THUMBNAIL_WIDTH,
+            ypos + GUI_THUMBNAIL_HEIGHT}
+
+        end
     end
 
     function InitGUI()
@@ -224,15 +227,11 @@ if CLIENT then
     end
     
     function RefreshAvatar(ply)
-        local xmin = GUI_THUMBNAIL_COORDS[playerVotes[ply]][1]
-        local ymin = GUI_THUMBNAIL_COORDS[playerVotes[ply]][2]
-        local xmax = GUI_THUMBNAIL_COORDS[playerVotes[ply]][3] - GUI_AVATAR_THUMBNAIL_SIZE
-        local ymax = GUI_THUMBNAIL_COORDS[playerVotes[ply]][4] - GUI_AVATAR_THUMBNAIL_SIZE
         if allAvatars[ply] ~= nil then
             allAvatars[ply]:Remove()
             allAvatars[ply] = nil
         end
-        InitAvatar(xmin, ymin, xmax, ymax, GUI_AVATAR_THUMBNAIL_SIZE, ply)
+        InitAvatar(GUI_THUMBNAIL_COORDS[RMV_PLAYER_VOTES[ply]], GUI_AVATAR_THUMBNAIL_SIZE, ply)
     end
 
     local ticker = 0
@@ -241,8 +240,8 @@ if CLIENT then
             return
         end	
 
-        if PANEL ~= nil then
-            if not PANEL:IsValid() then
+        if RMV_MAPVOTE_PANEL ~= nil then
+            if not RMV_MAPVOTE_PANEL:IsValid() then
                 ticker = CurTime() 
                 return
             end
