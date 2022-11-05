@@ -5,6 +5,7 @@ if SERVER then
     local playerVotes = {}
     local nextMap = nil
     local started = false
+    local mapVoteTimer = nil
 
     local function Initialize()
         SetTableRowSize(80)
@@ -38,15 +39,13 @@ if SERVER then
                     playerVotes[player] = -1
                 end
                 
-                -- Sends candidates to the players
                 net.Start('START_MAPVOTE')
                 net.WriteTable(candidates)
-                net.Broadcast()
-                started = true
-                Log('Vote started.')
+                net.WriteFloat(config['TIMER'])
+
 
                 -- Creates a voting period - timer
-                timer.Create('serverTime', config['TIMER'], 1, function()
+                mapVoteTimer = timer.Create('serverTime', config['TIMER'], 1, function()
                     Log('Vote time ended.')
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')
@@ -55,9 +54,15 @@ if SERVER then
                     started = false
                     Log('Changing map to: ' .. nextMap)
                 end)
+                started = true
+                Log('Vote started.')
+                net.WriteFloat(timer.TimeLeft('serverTime'))
+                net.Broadcast()
             else
                 net.Start('START_MAPVOTE')
                 net.WriteTable(candidates)
+                net.WriteFloat(config['TIMER'])
+                net.WriteFloat(timer.TimeLeft('serverTime'))
                 net.Broadcast()
                 SendVotesToClient(playerVotes)
             end
