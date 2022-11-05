@@ -24,6 +24,7 @@ if CLIENT then
 
     -- Variables
     local thumbnails = {}
+    local thumbnailBackgrounds = {}
     local allAvatars = {}
     local selectedMap = nil
 
@@ -149,7 +150,7 @@ if CLIENT then
         for map, img in pairs(thumbnails) do
             img:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
             img:SetSize(GUI_THUMBNAIL_WIDTH, GUI_THUMBNAIL_HEIGHT)
-            if map == selectedMap then
+            if map == selectedMap or map == RMV_NEXT_MAP then
                 img:SetPos(GUI_THUMBNAIL_COORDS[map][1] + 2, GUI_THUMBNAIL_COORDS[map][2] + 2)
                 img:SetSize(GUI_THUMBNAIL_WIDTH - 4, GUI_THUMBNAIL_HEIGHT - 4)
             end
@@ -166,7 +167,7 @@ if CLIENT then
             panel.Paint = function(self, _w, _h)
                 draw.RoundedBox(0, 0, 0, _w, _h, Color(0, 255, 255, 255))
             end
-                
+            thumbnailBackgrounds[map] = panel
         end
     end
 
@@ -215,6 +216,23 @@ if CLIENT then
         end
     end
 
+    function RefreshAvatar(ply)
+        if allAvatars[ply] ~= nil then
+            allAvatars[ply]:Remove()
+            allAvatars[ply] = nil
+        end
+        InitAvatar(GUI_THUMBNAIL_COORDS[RMV_PLAYER_VOTES[ply]], GUI_AVATAR_THUMBNAIL_SIZE, ply)
+    end
+
+    function ShowWinnerThumbnail()
+        local winnerThumbnail = thumbnailBackgrounds[RMV_NEXT_MAP]
+        winnerThumbnail.Paint = function(self, _w, _h)
+            draw.RoundedBox(0, 0, 0, _w, _h, Color(60, 255, 0))
+        end
+        RefreshThumbnails()
+    end
+
+    
     function InitGUI()
         CreateMainPanel()
         CreateCloseButton()
@@ -226,13 +244,6 @@ if CLIENT then
         CreateAvatarDock()
     end
     
-    function RefreshAvatar(ply)
-        if allAvatars[ply] ~= nil then
-            allAvatars[ply]:Remove()
-            allAvatars[ply] = nil
-        end
-        InitAvatar(GUI_THUMBNAIL_COORDS[RMV_PLAYER_VOTES[ply]], GUI_AVATAR_THUMBNAIL_SIZE, ply)
-    end
 
     local ticker = 0
     hook.Add('Think', 'CurTimeDelay', function()

@@ -4,9 +4,11 @@ if CLIENT then
     RMV_PLAYER_VOTES = {}
     RMV_MAPS = {}
     RMV_CLOSED = false
+    RMV_NEXT_MAP = nil
     
     net.Receive('START_MAPVOTE', function(len)
         RMV_CLOSED = false
+        RMV_NEXT_MAP = nil
         RMV_ALL_PLAYERS = player:GetAll()
         RMV_MAPS = net.ReadTable()
         InitGUI()
@@ -32,12 +34,13 @@ if CLIENT then
         if RMV_CLOSED then
             return
         end
-        local nextMap = net.ReadString()
+        RMV_NEXT_MAP = net.ReadString()
         
-        TitleLabel:SetText('The winner is: ' .. nextMap)
+        TitleLabel:SetText('The winner is: ' .. RMV_NEXT_MAP)
         TitleLabel:SizeToContents()
 
-        -- To do: Some flashy effect
+        -- TODO: Change to an animtion
+        ShowWinnerThumbnail()
     end)
 
 end
