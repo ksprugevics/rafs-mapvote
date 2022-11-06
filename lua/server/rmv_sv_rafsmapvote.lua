@@ -47,6 +47,7 @@ if SERVER then
                 -- Creates a voting period - timer
                 mapVoteTimer = timer.Create('serverTime', config['TIMER'], 1, function()
                     Log('Vote time ended.')
+                    PrintTable(playerVotes)
                     nextMap = TallyVotes(playerVotes, candidates)
                     net.Start('NEXT_MAP')
                     net.WriteString(nextMap)

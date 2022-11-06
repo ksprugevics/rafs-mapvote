@@ -72,6 +72,7 @@ if CLIENT then
         end
 
         CloseButton.DoClick = function()
+            surface.PlaySound('garrysmod/ui_hover.wav')
             ticker = CurTime()
             DeleteAvatars()
             RMV_MAPVOTE_PANEL:Clear()
@@ -122,6 +123,7 @@ if CLIENT then
         }
 
         RandomButton.DoClick = function()
+            surface.PlaySound('buttons/button24.wav')
             selectedMap = 'random'
             RefreshThumbnailBackgrounds()
             net.Start('MAP_CHOICE')
@@ -142,9 +144,9 @@ if CLIENT then
             MapLabel:SetFont('TextOverImageFont')
             MapLabel:SetSize(GUI_THUMBNAIL_WIDTH, 40)
 
-            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 2, GUI_THUMBNAIL_COORDS[mapName][2] + 2)
+            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, GUI_THUMBNAIL_COORDS[mapName][2] + 3)
             MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 40)
-            MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 4, GUI_THUMBNAIL_HEIGHT - 4)
+            MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 6, GUI_THUMBNAIL_HEIGHT - 6)
             
             --local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
             local fileName = 'a.jpg'
@@ -156,6 +158,7 @@ if CLIENT then
             
             thumbnails[mapName] = MapVoteImage
             MapVoteImage.DoClick = function()
+                surface.PlaySound('buttons/button24.wav')
                 selectedMap = mapName
                 RefreshThumbnailBackgrounds()
                 net.Start('MAP_CHOICE')
@@ -169,8 +172,23 @@ if CLIENT then
         for map, background in pairs(thumbnailBackgrounds) do
             background:Hide()
             if map == RMV_NEXT_MAP then
+                local isAlphaAscending = true
                 background.Paint = function(self, _w, _h)
-                    draw.RoundedBox(0, 0, 0, _w, _h, Color(60, 255, 0, 255))
+                    if rainbowCounter >= 255 then
+                        rainbowCounter = 255
+                        isAlphaAscending = false
+                    elseif rainbowCounter <= 0 then
+                        rainbowCounter = 0
+                        isAlphaAscending = true
+                    end
+
+                    draw.RoundedBox(0, 0, 0, _w, _h, Color(21, 255, 0, rainbowCounter % 255))
+
+                    if isAlphaAscending then
+                        rainbowCounter = rainbowCounter + 2
+                    else
+                        rainbowCounter = rainbowCounter - 2
+                    end
                 end
                 background:Show()
             elseif map == selectedMap then
