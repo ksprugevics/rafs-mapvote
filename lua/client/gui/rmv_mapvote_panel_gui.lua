@@ -296,8 +296,8 @@ if CLIENT then
     function StartTimer(seconds)
 
         local anim = Derma_Anim('CountdownTimer', timerBar, function(pnl, anim, delta, data)
-            pnl:SetY(GUI_TIMER_BAR_HEIGHT - pnl:GetTall() + 5)
             pnl:SetHeight(GUI_TIMER_BAR_ACTIVE_HEIGHT - (pnl:GetY() + pnl:GetTall()) * delta)
+            pnl:SetY(GUI_TIMER_BAR_HEIGHT - pnl:GetTall() + 5)
         end)
 
         anim:Start(seconds)
@@ -309,7 +309,10 @@ if CLIENT then
     end
 
     function InitGUI()
-        selectedMap = nil
+        if RMV_TIMER_SECONDS_LEFT == RMV_TIMER_SECONDS then
+            selectedMap = nil
+        end
+
         CreateMainPanel()
         CreateCloseButton()
         CreateTitleLabel('Vote for the next map:')
