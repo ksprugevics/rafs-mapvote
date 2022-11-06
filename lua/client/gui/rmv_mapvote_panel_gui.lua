@@ -35,6 +35,7 @@ if CLIENT then
     local allAvatars = {}
     local selectedMap = nil
     local rainbowCounter = 0
+    local flashCounter = 0
 
     
     -- Main panel
@@ -148,12 +149,19 @@ if CLIENT then
             MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 40)
             MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 6, GUI_THUMBNAIL_HEIGHT - 6)
             
-            --local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
-            local fileName = 'a.jpg'
-            if file.Exists(fileName, 'data') then
-                MapVoteImage:SetImage('data/' .. fileName)
+
+            local fileName = 'maps/thumb/' .. mapName .. '.png'
+
+            -- Checks if user has a custom thumbnail under 'data', then checks maps directory for thumbnail
+            -- if no thumbnails are found, default to blank thumbnail
+            if file.Exists('rafsmapvote/thumbnails/' .. mapName .. '.png', 'DATA') then
+                MapVoteImage:SetImage('data/rafsmapvote/thumbnails/' .. mapName .. '.png')
+            elseif file.Exists('rafsmapvote/thumbnails/' .. mapName .. '.jpg', 'DATA') then
+                MapVoteImage:SetImage('data/rafsmapvote/thumbnails/' .. mapName .. '.jpg')
+            elseif file.Exists(fileName, 'GAME') then
+                MapVoteImage:SetImage(fileName)
             else
-                MapVoteImage:SetMaterial('models/rendertarget')
+                MapVoteImage:SetImage('no_thumbnail.jpg')
             end
             
             thumbnails[mapName] = MapVoteImage
@@ -174,20 +182,20 @@ if CLIENT then
             if map == RMV_NEXT_MAP then
                 local isAlphaAscending = true
                 background.Paint = function(self, _w, _h)
-                    if rainbowCounter >= 255 then
-                        rainbowCounter = 255
+                    if flashCounter >= 255 then
+                        flashCounter = 255
                         isAlphaAscending = false
-                    elseif rainbowCounter <= 0 then
-                        rainbowCounter = 0
+                    elseif flashCounter <= 0 then
+                        flashCounter = 0
                         isAlphaAscending = true
                     end
 
-                    draw.RoundedBox(0, 0, 0, _w, _h, Color(21, 255, 0, rainbowCounter % 255))
+                    draw.RoundedBox(0, 0, 0, _w, _h, Color(21, 255, 0, flashCounter))
 
                     if isAlphaAscending then
-                        rainbowCounter = rainbowCounter + 2
+                        flashCounter = flashCounter + 2
                     else
-                        rainbowCounter = rainbowCounter - 2
+                        flashCounter = flashCounter - 2
                     end
                 end
                 background:Show()
