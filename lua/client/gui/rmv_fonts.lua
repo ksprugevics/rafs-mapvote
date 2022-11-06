@@ -32,4 +32,12 @@ if CLIENT then
         antialias = true,
     })
 
+    surface.CreateFont('Version font', {
+        font = 'Trebuchet24',
+        extended = true,
+        size = 15,
+        weight = 400,
+        antialias = true,
+    })
+
 end

@@ -79,6 +79,16 @@ if CLIENT then
         end
     end
 
+    -- Version label
+    function CreateVersionLabel()
+        local VersionLabel = vgui.Create('DLabel', RMV_MAPVOTE_PANEL)
+        VersionLabel:SetText("Raf's MapVote v1.0")
+        VersionLabel:SetPos(GUI_THUMBNAIL_COORDS['random'][3] - 110, GUI_THUMBNAIL_COORDS['random'][4] + 5)
+        VersionLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
+        VersionLabel:SetFont('Version font')
+        VersionLabel:SizeToContents()
+    end
+
     -- Title label
     function CreateTitleLabel(text)
         TitleLabel = vgui.Create('DLabel', RMV_MAPVOTE_PANEL)
@@ -112,7 +122,7 @@ if CLIENT then
 
         RandomButton.DoClick = function()
             selectedMap = 'random'
-            RefreshThumbnails()
+            RefreshThumbnailBackgrounds()
             net.Start('MAP_CHOICE')
             net.WriteString('random')
             net.SendToServer()
@@ -131,10 +141,10 @@ if CLIENT then
             MapLabel:SetFont('TextOverImageFont')
             MapLabel:SetSize(GUI_THUMBNAIL_WIDTH, 40)
 
-            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1], GUI_THUMBNAIL_COORDS[mapName][2])
-            MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 5, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 40)
-            MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH, GUI_THUMBNAIL_HEIGHT)
-
+            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 2, GUI_THUMBNAIL_COORDS[mapName][2] + 2)
+            MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 40)
+            MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 4, GUI_THUMBNAIL_HEIGHT - 4)
+            
             --local fileName = settings['THUMBNAIL_DIR'] .. mapName .. '.jpg'
             local fileName = 'a.jpg'
             if file.Exists(fileName, 'data') then
@@ -146,7 +156,7 @@ if CLIENT then
             thumbnails[mapName] = MapVoteImage
             MapVoteImage.DoClick = function()
                 selectedMap = mapName
-                RefreshThumbnails()
+                RefreshThumbnailBackgrounds()
                 net.Start('MAP_CHOICE')
                 net.WriteString(mapName)
                 net.SendToServer()
@@ -154,13 +164,16 @@ if CLIENT then
         end
     end
 
-    function RefreshThumbnails() 
-        for map, img in pairs(thumbnails) do
-            img:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
-            img:SetSize(GUI_THUMBNAIL_WIDTH, GUI_THUMBNAIL_HEIGHT)
-            if map == selectedMap or map == RMV_NEXT_MAP then
-                img:SetPos(GUI_THUMBNAIL_COORDS[map][1] + 2, GUI_THUMBNAIL_COORDS[map][2] + 2)
-                img:SetSize(GUI_THUMBNAIL_WIDTH - 4, GUI_THUMBNAIL_HEIGHT - 4)
+    function RefreshThumbnailBackgrounds() 
+        for map, background in pairs(thumbnailBackgrounds) do
+            local color = Color(0, 0, 0, 0)
+            if map == RMV_NEXT_MAP then
+                color = Color(60, 255, 0)
+            elseif map == selectedMap then
+                color =  Color(0, 255, 255, 155)
+            end
+            background.Paint = function(self, _w, _h)
+                draw.RoundedBox(0, 0, 0, _w, _h, color)
             end
         end
     end
@@ -173,7 +186,7 @@ if CLIENT then
             panel:SetSize(GUI_THUMBNAIL_COORDS[map][3] - GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][4] - GUI_THUMBNAIL_COORDS[map][2])
             panel:SetParent(RMV_MAPVOTE_PANEL)
             panel.Paint = function(self, _w, _h)
-                draw.RoundedBox(0, 0, 0, _w, _h, Color(0, 255, 255, 255))
+                draw.RoundedBox(0, 0, 0, _w, _h, Color(0, 255, 255, 0))
             end
             thumbnailBackgrounds[map] = panel
         end
@@ -233,14 +246,6 @@ if CLIENT then
         InitAvatar(GUI_THUMBNAIL_COORDS[RMV_PLAYER_VOTES[ply]], GUI_AVATAR_THUMBNAIL_SIZE, ply)
     end
 
-    function ShowWinnerThumbnail()
-        local winnerThumbnail = thumbnailBackgrounds[RMV_NEXT_MAP]
-        winnerThumbnail.Paint = function(self, _w, _h)
-            draw.RoundedBox(0, 0, 0, _w, _h, Color(60, 255, 0))
-        end
-        RefreshThumbnails()
-    end
-
     function CreateTimerBar(seconds, secondsLeft)
         local panel = vgui.Create('DPanel')
         panel:SetParent(RMV_MAPVOTE_PANEL)
@@ -287,8 +292,10 @@ if CLIENT then
         CreateThumbnailBackgrounds()
         CreateMapThumbnails()
         CreateAvatarDock()
+        CreateVersionLabel()
         CreateTimerBar(RMV_TIMER_SECONDS, RMV_TIMER_SECONDS_LEFT)
         StartTimer(RMV_TIMER_SECONDS)
+        RefreshThumbnailBackgrounds()
     end
     
 

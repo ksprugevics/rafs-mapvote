@@ -45,7 +45,7 @@ if CLIENT then
         TitleLabel:SizeToContents()
 
         -- TODO: Change to an animtion
-        ShowWinnerThumbnail()
+        RefreshThumbnailBackgrounds()
     end)
 
 end
