@@ -3,12 +3,19 @@ if CLIENT then
     RMV_ALL_PLAYERS = {}
     RMV_PLAYER_VOTES = {}
     RMV_MAPS = {}
-    RMV_CLOSED = false
-    
+    RMV_CLOSED = true
+    RMV_NEXT_MAP = nil
+    RMV_TIMER_SECONDS = nil
+    RMV_TIMER_SECONDS_LEFT = nil
+
     net.Receive('START_MAPVOTE', function(len)
+        if RMV_CLOSED == false then return end
         RMV_CLOSED = false
+        RMV_NEXT_MAP = nil
         RMV_ALL_PLAYERS = player:GetAll()
         RMV_MAPS = net.ReadTable()
+        RMV_TIMER_SECONDS = net.ReadFloat()
+        RMV_TIMER_SECONDS_LEFT = net.ReadFloat()
         InitGUI()
     end)
 
@@ -32,12 +39,13 @@ if CLIENT then
         if RMV_CLOSED then
             return
         end
-        local nextMap = net.ReadString()
+        RMV_NEXT_MAP = net.ReadString()
         
-        TitleLabel:SetText('The winner is: ' .. nextMap)
+        surface.PlaySound('garrysmod/content_downloaded.wav')
+        TitleLabel:SetText('The winner is: ' .. RMV_NEXT_MAP)
         TitleLabel:SizeToContents()
-
-        -- To do: Some flashy effect
+        
+        RefreshThumbnailBackgrounds()
     end)
 
 end

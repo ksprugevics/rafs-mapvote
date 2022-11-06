@@ -28,7 +28,16 @@ if CLIENT then
         font = 'Trebuchet24',
         extended = true,
         size = 30,
-        weight = 3000,
+        weight = 600,
+        antialias = true,
+        outline = true
+    })
+
+    surface.CreateFont('Version font', {
+        font = 'Trebuchet24',
+        extended = true,
+        size = 15,
+        weight = 400,
         antialias = true,
     })
 

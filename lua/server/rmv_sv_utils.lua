@@ -125,6 +125,7 @@ if SERVER then
             end
         end
 
+        PrintTable(mapVotes)
         Log('Vote winner: ' .. leader)
         return leader
     end
