@@ -34,6 +34,7 @@ if CLIENT then
     local thumbnailBackgrounds = {}
     local allAvatars = {}
     local selectedMap = nil
+    local rainbowCounter = 0
 
     
     -- Main panel
@@ -166,14 +167,14 @@ if CLIENT then
 
     function RefreshThumbnailBackgrounds() 
         for map, background in pairs(thumbnailBackgrounds) do
-            local color = Color(0, 0, 0, 0)
+            background:Hide()
             if map == RMV_NEXT_MAP then
-                color = Color(60, 255, 0)
+                background.Paint = function(self, _w, _h)
+                    draw.RoundedBox(0, 0, 0, _w, _h, Color(60, 255, 0, 255))
+                end
+                background:Show()
             elseif map == selectedMap then
-                color =  Color(0, 255, 255, 155)
-            end
-            background.Paint = function(self, _w, _h)
-                draw.RoundedBox(0, 0, 0, _w, _h, color)
+                background:Show()
             end
         end
     end
@@ -185,8 +186,14 @@ if CLIENT then
             panel:SetPos(GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][2])
             panel:SetSize(GUI_THUMBNAIL_COORDS[map][3] - GUI_THUMBNAIL_COORDS[map][1], GUI_THUMBNAIL_COORDS[map][4] - GUI_THUMBNAIL_COORDS[map][2])
             panel:SetParent(RMV_MAPVOTE_PANEL)
+            panel:SetBackgroundColor(Color(0, 255, 255, 0))
+            
             panel.Paint = function(self, _w, _h)
-                draw.RoundedBox(0, 0, 0, _w, _h, Color(0, 255, 255, 0))
+                if rainbowCounter >= 360 then
+                    rainbowCounter = 0
+                end
+                draw.RoundedBox(0, 0, 0, _w, _h, HSVToColor(rainbowCounter % 360, 0.8, 0.9))
+                rainbowCounter = rainbowCounter + 0.1
             end
             thumbnailBackgrounds[map] = panel
         end
@@ -284,6 +291,7 @@ if CLIENT then
     end
 
     function InitGUI()
+        selectedMap = nil
         CreateMainPanel()
         CreateCloseButton()
         CreateTitleLabel('Vote for the next map:')
