@@ -47,6 +47,7 @@ if CLIENT then
         Frame:SetDraggable(false)
         Frame:ShowCloseButton(false)
         Frame:MakePopup()
+        Frame:SetKeyboardInputEnabled(false)
 
         Frame.Paint = function(self, _w, _h)
             draw.RoundedBox(0, GUI_STARTING_X, 0, _w, _h, Color(0, 0, 0, 0))

@@ -9,17 +9,20 @@ if SERVER then
         -- True path example: garrysmod/data/rafsmapvote/
         settings['DATA_DIR'] = 'rafsmapvote/'
 
-        -- Which maps to include in the map pool. Must be under garrysmod/maps/
+        -- If non provided, use all maps
+        settings['MAP_PREFIX'] = {
+            'ttt_',
+            'cs_',
+            'de_'
+        }
+
+        -- If a player has not voted, their vote will go to a random map
+        settings['NO_VOTE_TO_RANDOM'] = true
+
+        -- Which maps to include in the map pool (prefix filter applies). Must be under garrysmod/maps/
         -- (The map should actually be in the directory for it to show up)
         -- Adding/removing maps requires a restart of the server or a manual re-run of the server script
         settings['MAPS'] = {
-            'de_dust2',
-            'cs_office',
-            'cs_assault',
-            'ttt_67thway_v3',
-            'gm_construct',
-            'ttt_67th_way',
-            'de_nuke'
         }
 
         -- Place thumbnails here
@@ -31,7 +34,7 @@ if SERVER then
         settings['MAP_COOLDOWN'] = 3
     
         -- Voting period in seconds
-        settings['TIMER'] = 20 + 1
+        settings['TIMER'] = 5 + 1
     
         file.Write(fullPath, util.TableToJSON(settings))
     end
@@ -70,39 +73,59 @@ if SERVER then
         return util.JSONToTable(file.Read(configPath))
     end
 
-    -- Creates or updates a JSON file that keeps track of played maps count
-    function GenerateMapList(fullPath, configMaps)
-        local oldMapList = {}
-        if file.Exists(fullPath, 'DATA') then
-            oldMapList = util.JSONToTable(file.Read(fullPath, 'DATA'))
-        end
-
-        local localMaps = {}
-        for _, map in pairs(file.Find('maps/*.bsp', 'GAME')) do
-            -- remove file extension
-            localMaps[map:sub(1, -5)] = 0
-        end
-
-        local maps = {}
-        for _, map in pairs(configMaps) do
-            -- Set map 'played' counter to 0. If map exists in the oldMapList, use its 'played' counter instead.
-            if localMaps[map] ~= nil then
-                maps[map] = 0
-                if oldMapList ~= nil then
-                    if oldMapList[map] ~= nil then
-                        maps[map] = oldMapList[map]                        
-                    end
+    local function FilterMapListByPrefixes(mapList, prefixes)
+        local temp = {}
+        local counter = 0
+        for _, prefix in pairs(prefixes) do
+            for i, map in pairs(mapList) do
+                if string.StartWith(map, prefix) then
+                    counter = counter + 1
+                    temp[counter] = map
                 end
             end
         end
+        return temp
+    end
 
-        -- Increments the times played by 1
-        if maps[game.GetMap()] ~= nil then
-            maps[game.GetMap()] = maps[game.GetMap()] + 1
+    local function RemoveMapSubfixes(mapList)
+        local temp = {}
+        for i, map in pairs(mapList) do
+            temp[i] = map:sub(1, -5)
+        end
+        return temp
+    end
+
+    function GenerateMapList(configMaps, mapPrefixes)
+
+        local localMaps = RemoveMapSubfixes(file.Find('maps/*.bsp', 'GAME'))
+
+        -- Filter by prefixes
+        if mapPrefixes ~= nil then
+            localMaps = FilterMapListByPrefixes(localMaps, mapPrefixes)
+        end
+        
+        return localMaps
+    end
+
+    function GenerateMapCount(fullPath, mapList)
+        local oldMapCount = {}
+        if file.Exists(fullPath, 'DATA') then
+            oldMapCount = util.JSONToTable(file.Read(fullPath, 'DATA'))
         end
 
-        file.Write(fullPath, util.TableToJSON(maps))
-        return maps
+        for _, map in pairs(mapList) do
+            if oldMapCount[map] == nil then
+                oldMapCount[map] = 0
+            end
+        end
+
+        local currentMap = game.GetMap()
+        if oldMapCount[currentMap] ~= nil then
+            oldMapCount[currentMap] = oldMapCount[currentMap] + 1
+        end
+
+        file.Write(fullPath, util.TableToJSON(oldMapCount))
+        return oldMapCount
     end
 
     -- Creates or updates a JSON file that keeps track of recently played maps and their remaining cooldown

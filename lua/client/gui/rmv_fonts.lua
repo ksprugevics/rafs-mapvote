@@ -30,7 +30,7 @@ if CLIENT then
         size = 30,
         weight = 600,
         antialias = true,
-        outline = true
+        shadow = true
     })
 
     surface.CreateFont('Version font', {
