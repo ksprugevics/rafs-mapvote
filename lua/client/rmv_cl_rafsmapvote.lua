@@ -13,8 +13,10 @@ if CLIENT then
 
         -- Dirty workaround to hide the TTT end-round panel, so it doesnt block the mapvote
         -- By overriding this function, you cannot make the panel reappear before the map resets
-        -- function CLSCORE:ShowPanel() return end
-
+        if GAMEMODE_NAME == "terrortown" then
+            function CLSCORE:ShowPanel() return end
+        end
+        
         RMV_CLOSED = false
         RMV_NEXT_MAP = nil
         RMV_ALL_PLAYERS = player:GetAll()
