@@ -1,93 +1,64 @@
 if SERVER then
 
    -- Creates a list of map vote candidates
-   function GenerateVoteCandidates(maps, history)
+   function GenerateVoteCandidates(maps, history, stats)
 
-    local mapPool = table.Copy(maps)
-    local popularMaps = {}
-    local underdogMaps = {}
+        local mapPool = table.Copy(maps)
+        local candidates = {}
 
-    -- Deletes maps that have been recently played from the map pool (cooldown)
-    for map, _ in pairs(mapPool) do
-        for map_history, _ in pairs(history) do
-            if map == map_history then
-                mapPool[map] = nil
-                break
+        if #mapPool <= 6 then
+            return mapPool
+        end
+
+        -- Deletes maps that have been recently played from the map pool (cooldown)
+        for i, map in pairs(mapPool) do
+            for map_history, _ in pairs(history) do
+                if map == map_history then
+                    mapPool[i] = nil
+                    break
+                end
             end
         end
-    end
 
-    local mapCount = table.Count(mapPool)
-
-    if mapCount < 6 then
-        local allMaps = {}
-        local mapCounter = 1
-
-        -- Creates a table with all maps
-        for map, votes in pairs(maps) do
-            allMaps[mapCounter] = map
-            mapCounter = mapCounter + 1
+        if #mapPool <= 6 then
+            return mapPool
         end
-        return allMaps
-    end
 
-    -- Select the 3 most popular maps
-    -- Creates a list of keys(map names)
-    local keyList = {}
-    for name, _ in pairs(mapPool) do
-        keyList[#keyList + 1] = name
-    end
-
-    -- Comparison function, that compares values of keys
-    local function sortByValue(a, b)
-        return mapPool[a] > mapPool[b]
-    end
-    
-    -- Sort key list with our comparison function
-    table.sort(keyList, sortByValue)
-
-    -- The 3 most played maps are added to the popular map pool
-    for k = 1, 3 do
-        popularMaps[keyList[k]] = mapPool[keyList[k]]
-    end
-
-    -- Selects 3 "underdog" maps on random
-    local mapCounter = 0
-    while mapCounter < 3 do
-        
-        -- Generate a random map
-        local randomMap = keyList[math.random(4, #keyList)]
-        local isMapUsed = false
-        
-        -- Checks if map has been previously chosen
-        for map, _ in pairs(underdogMaps) do
-            if map == randomMap then 
-                isMapUsed = true
-                break
-            end
+        local mapIndicesSorted = {}
+        local counter = 1
+        for name, _ in pairs(stats) do
+            mapIndicesSorted[counter] = name
+            counter = counter + 1
         end
-        
-        if not isMapUsed then
-            mapCounter = mapCounter + 1
-            underdogMaps[randomMap] = mapPool[randomMap]
+
+        -- Comparison function, that compares map times played in stats
+        local function sortByValue(a, b)
+            return stats[a] > stats[b]
         end
-    end
+                
+        -- Sort key list with our comparison function
+        table.sort(mapIndicesSorted, sortByValue)
+        
+        -- Take 3 most popular maps
+        local counter = 1
+        for i, map in pairs(mapIndicesSorted) do
+            if not table.HasValue(mapPool, map) then continue end
+            candidates[counter] = map
+            counter = counter + 1
+            if counter == 4 then break end
+        end
 
-    local allMaps = {}
-    local mapCounter = 1
+        -- Take 3 random maps afterwards
+        local counter = 4
+        while counter <= 6 do
+            local randomMap = mapIndicesSorted[math.random(4, #mapIndicesSorted)]
+            if not table.HasValue(mapPool, randomMap) then continue end
+            if table.HasValue(candidates, randomMap) then continue end
+            candidates[counter] = randomMap
+            counter = counter + 1
 
-    -- Creates a table with all maps
-    for map, _ in pairs(popularMaps) do
-        allMaps[mapCounter] = map
-        mapCounter = mapCounter + 1
-    end
-
-    for map, _ in pairs(underdogMaps) do
-        allMaps[mapCounter] = map
-        mapCounter = mapCounter + 1
-    end
-
-    return allMaps
+        end
+        return candidates
     end
 
     -- Sends the newest votes to the client
@@ -98,13 +69,12 @@ if SERVER then
     end
 
     -- Tallies the votes
-    function TallyVotes(playerVotes, allMaps)
+    function TallyVotes(playerVotes, allMaps, noVoteToRandom)
 
         local mapVotes = {}
-        local leader = allMaps[1]
 
         -- Generate map-votes table
-        for _, mapName in pairs(allMaps) do
+        for i, mapName in pairs(allMaps) do
             mapVotes[mapName] = 0
         end
 
@@ -115,18 +85,34 @@ if SERVER then
                 mapVotes[allMaps[randomVote]] = mapVotes[allMaps[randomVote]] + 1
             elseif type(mapVotes[map]) == 'number' then
                 mapVotes[map] = mapVotes[map] + 1
+            elseif noVoteToRandom and map == -1 then
+                local randomVote = math.random(1, #allMaps)
+                mapVotes[allMaps[randomVote]] = mapVotes[allMaps[randomVote]] + 1
             end
         end
 
-        -- Declares a winner
+        -- Calculate leaders
+        local winners = {}
+        local leaderVoteCount = 0
+
         for map, votes in pairs(mapVotes) do
-            if mapVotes[map] > mapVotes[leader] then
-                leader = map
+            if votes > leaderVoteCount then
+                leaderVoteCount = votes
+                winners = {map}
+            elseif votes == leaderVoteCount then
+                winners[#winners + 1] = map 
             end
         end
 
+        local nextMap = winners[1]
+
+        -- Handle ties
+        if #winners > 1 then
+            nextMap = winners[math.random(1, #winners)]
+        end
+        
         PrintTable(mapVotes)
-        Log('Vote winner: ' .. leader)
-        return leader
+        Log('Vote winner: ' .. nextMap)
+        return nextMap
     end
 end
