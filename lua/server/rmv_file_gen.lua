@@ -35,7 +35,16 @@ if SERVER then
     
         -- Voting period in seconds
         settings['TIMER'] = 5 + 1
-    
+
+        -- Minimal players for rock the vote to be enabled
+        settings['RTV_MIN'] = 3
+
+        -- Threshold to rock the vote
+        settings['RTV_PERCENT'] = 0.6
+
+        -- Time in seconds before RTV is allowed
+        settings['RTV_TIME'] = 300
+
         file.Write(fullPath, util.TableToJSON(settings))
     end
 

@@ -1,6 +1,6 @@
 if SERVER then
     
-    local config = {}
+    RMV_CONFIG = {}
     local candidates = {}
     local playerVotes = {}
     local nextMap = nil
@@ -12,11 +12,11 @@ if SERVER then
         SetTableRowSize(80)
         PrintLogo()
         PrintTableHeader()
-        config = SetupDataDir()
+        RMV_CONFIG = SetupDataDir()
         PrintTableRow('Config loaded.')
 
         PrintTableRow('Generating map list..')
-        local mapList = GenerateMapList(config['MAPS'], config['MAP_PREFIX'])
+        local mapList = GenerateMapList(RMV_CONFIG['MAPS'], RMV_CONFIG['MAP_PREFIX'])
         PrintTableRow('Found ' .. #mapList .. ' maps in total.')
         
         if #mapList < 6 then
@@ -25,10 +25,10 @@ if SERVER then
 
 
         PrintTableRow('Loading map statistics..')
-        local mapStats = GenerateMapCount(config['DATA_DIR'] .. 'map_stats.json', mapList)
+        local mapStats = GenerateMapCount(RMV_CONFIG['DATA_DIR'] .. 'map_stats.json', mapList)
 
         PrintTableRow('Loading map history..')
-        local mapHistory = GenerateMapHistory(config['DATA_DIR'] .. 'map_history.json', config['MAP_COOLDOWN'])
+        local mapHistory = GenerateMapHistory(RMV_CONFIG['DATA_DIR'] .. 'map_history.json', RMV_CONFIG['MAP_COOLDOWN'])
 
         PrintTableRow('Generating mapvote candidtes..')
         candidates = GenerateVoteCandidates(mapList, mapHistory, mapStats)
@@ -37,8 +37,8 @@ if SERVER then
     end
 
     function StartRafsMapvote(customTimer, noVotesAsRandom)
-        local voteTime = customTimer or config['TIMER']
-        local noVotesAsRandom = noVotesAsRandom or config['NO_VOTE_TO_RANDOM']
+        local voteTime = customTimer or RMV_CONFIG['TIMER']
+        local noVotesAsRandom = noVotesAsRandom or RMV_CONFIG['NO_VOTE_TO_RANDOM']
         if started == false then
 
             -- Create a table that will contain player votes
@@ -110,6 +110,8 @@ if SERVER then
         end
     end)
 
+
+    
     -- Executes when a user votes
     net.Receive('MAP_CHOICE', function(len, ply)
         local userChoice = net.ReadString()
