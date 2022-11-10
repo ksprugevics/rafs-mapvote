@@ -1,6 +1,7 @@
 if SERVER then
 
     local rtvVotes = {}
+    local delayRound = false
 
     hook.Add('PlayerSay', 'RMVRTV', function(ply, text)
 
@@ -23,15 +24,23 @@ if SERVER then
 
             rtvVotes[ply] = 1
 
-            if table.Count(rtvVotes) / #player.GetAll() > RMV_CONFIG['RTV_PERCENT'] then
-                Log('RTV vote count reached. Starting mapvote.')
-                StartRafsMapvote()
+            if table.Count(rtvVotes) / #player.GetAll() >= RMV_CONFIG['RTV_PERCENT'] then
+                Log('RTV vote count reached. Starting mapvote after this round.')
+                delayRound = true
             else
                 local playersNeeded = math.ceil(RMV_CONFIG['RTV_PERCENT'] * #player.GetAll()) - table.Count(rtvVotes)
                 PrintMessage(HUD_PRINTTALK, '[RTV] ' .. ply:Name() .. ' voted to rock the vote!')
                 PrintMessage(HUD_PRINTTALK, '[RTV] ' .. playersNeeded .. ' more player(s) needed to RTV.')
             end
         end
+    end)
+
+    hook.Add('TTTDelayRoundStartForVote', 'RMVDELAYROUND', function()
+        return delayRound
+    end)
+
+    hook.Add('TTTEndRound', 'RMVRTVSTART', function()
+        StartRafsMapvote()
     end)
 
     hook.Add('PlayerDisconnected', 'RMVRTVPLAYERLEAVE', function(ply)

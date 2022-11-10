@@ -1,11 +1,13 @@
 {
 	"title"		:	"Raf's Mapvote",
-	"version"   :   "0.4",
+	"version"   :   "1.0",
 	"type"		:	"ServerContent",
 	"tags"		:	["realism" ],
 	"ignore"	:
 	[
 		".git",
 		".vscode",
+		"LICENCE",
+		"README.MD"
 	]
 }
