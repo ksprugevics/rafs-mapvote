@@ -61,11 +61,13 @@ It is also recommended to install a Map Icon pack like the one made by [Kirays](
 If installed correctly, there should be a console output when starting the server. Afterwards you should probably change the config.
 ## Links
 [Steam Workshop]()
+
 [Adding a server workshop collection](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers)
+
 [TTT map icon pack by Kirays](https://steamcommunity.com/sharedfiles/filedetails/?id=2218062124)
 
 
-## License
+## Licence
 
 Feel free to use and modify the code to your own liking, following the guidelines of the MIT licence.
 
