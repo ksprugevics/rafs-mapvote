@@ -8,7 +8,7 @@ if CLIENT then
     RMV_TIMER_SECONDS = nil
     RMV_TIMER_SECONDS_LEFT = nil
 
-    net.Receive('START_MAPVOTE', function(len)
+    net.Receive(RMV_NETWORK_STRINGS["startVote"], function(len)
         if RMV_CLOSED == false then return end
 
         -- Dirty workaround to hide the TTT end-round panel, so it doesnt block the mapvote
@@ -28,7 +28,7 @@ if CLIENT then
 
 
     -- Update avatars 
-    net.Receive('REFRESH_VOTES', function(len)
+    net.Receive(RMV_NETWORK_STRINGS["refreshVotes"], function(len)
         if RMV_CLOSED then
             return
         end
@@ -43,7 +43,7 @@ if CLIENT then
         end
     end)
 
-    net.Receive('NEXT_MAP', function()
+    net.Receive(RMV_NETWORK_STRINGS["nextMap"], function()
         if RMV_CLOSED then
             return
         end

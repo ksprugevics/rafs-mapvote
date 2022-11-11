@@ -48,7 +48,7 @@ if SERVER then
                 playerVotes[player] = -1
             end
             
-            net.Start('START_MAPVOTE')
+            net.Start(RMV_NETWORK_STRINGS["startVote"])
             net.WriteTable(candidates)
             net.WriteFloat(voteTime)
 
@@ -57,7 +57,7 @@ if SERVER then
                 Log('Vote time ended.')
                 PrintTable(playerVotes)
                 nextMap = TallyVotes(playerVotes, candidates, noVotesAsRandom)
-                net.Start('NEXT_MAP')
+                net.Start(RMV_NETWORK_STRINGS["nextMap"])
                 net.WriteString(nextMap)
                 net.Broadcast()
                 started = false
@@ -72,7 +72,7 @@ if SERVER then
             net.WriteFloat(timer.TimeLeft('serverTime'))
             net.Broadcast()
         else
-            net.Start('START_MAPVOTE')
+            net.Start(RMV_NETWORK_STRINGS["startVote"])
             net.WriteTable(candidates)
             net.WriteFloat(voteTime)
             net.WriteFloat(timer.TimeLeft('serverTime'))
@@ -113,7 +113,7 @@ if SERVER then
 
     
     -- Executes when a user votes
-    net.Receive('MAP_CHOICE', function(len, ply)
+    net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
         local userChoice = net.ReadString()
         playerVotes[ply] = userChoice
         PrintTable(playerVotes)
