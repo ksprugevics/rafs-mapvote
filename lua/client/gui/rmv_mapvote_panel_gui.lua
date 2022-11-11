@@ -22,7 +22,9 @@ if CLIENT then
     local GUI_TIMER_PAD_HEIGHT = GUI_TIMER_BAR_HEIGHT + 10
 
     -- Colors
-    local GUI_BASE_PANEL_COLOR = Color(50, 50, 50, 200)
+    -- local GUI_BASE_PANEL_COLOR = Color(50, 50, 50, 200)
+    local GUI_BASE_PANEL_COLOR = Color(1, 1, 1, 240)
+    -- local GUI_BASE_PANEL_COLOR = Color(5, 180, 215, 240)
     local GUI_BASE_TEXT_COLOR = Color(255, 255, 255, 255)
 
     -- Animations
@@ -49,14 +51,14 @@ if CLIENT then
         Frame:MakePopup()
         Frame:SetKeyboardInputEnabled(false)
 
-        Frame.Paint = function(self, _w, _h)
+        Frame.Paint = function(self, _w, _h)          
             draw.RoundedBox(0, GUI_STARTING_X, 0, _w, _h, Color(0, 0, 0, 0))
             Derma_DrawBackgroundBlur(self, SysTime())
             draw.RoundedBox(0, GUI_STARTING_X, 0, _w, 45, GUI_BASE_PANEL_COLOR)
             draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y - 5, _w + 15, GUI_THUMBNAIL_HEIGHT * 2 + 15, GUI_BASE_PANEL_COLOR)
             draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5, (GUI_THUMBNAIL_WIDTH + 10) * 2 - 10, GUI_THUMBNAIL_HEIGHT / 3 + 13, GUI_BASE_PANEL_COLOR)
             draw.RoundedBox(0, 0, 0, GUI_TIMER_PAD_WIDTH, GUI_TIMER_PAD_HEIGHT, GUI_BASE_PANEL_COLOR)
-        end
+        end       
         RMV_MAPVOTE_PANEL = Frame
     end
 
