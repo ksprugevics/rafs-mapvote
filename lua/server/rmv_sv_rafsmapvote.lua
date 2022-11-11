@@ -48,18 +48,14 @@ if SERVER then
                 playerVotes[player] = -1
             end
             
-            net.Start(RMV_NETWORK_STRINGS["startVote"])
-            net.WriteTable(candidates)
-            net.WriteFloat(voteTime)
+
 
             -- Creates a voting period - timer
             mapVoteTimer = timer.Create('serverTime', voteTime, 1, function()
                 Log('Vote time ended.')
                 PrintTable(playerVotes)
                 nextMap = TallyVotes(playerVotes, candidates, noVotesAsRandom)
-                net.Start(RMV_NETWORK_STRINGS["nextMap"])
-                net.WriteString(nextMap)
-                net.Broadcast()
+                rmvBroadcastString(RMV_NETWORK_STRINGS["nextMap"], nextMap)
                 started = false
                 Log('Changing map to: ' .. nextMap)
                 -- timer.Simple(5, function()
@@ -69,15 +65,10 @@ if SERVER then
 
             Log('Vote started.')
             started = true
-            net.WriteFloat(timer.TimeLeft('serverTime'))
-            net.Broadcast()
+            rmvBroadcastMapvote(RMV_NETWORK_STRINGS["startVote"], candidates, voteTime, timer.TimeLeft('serverTime'))
         else
-            net.Start(RMV_NETWORK_STRINGS["startVote"])
-            net.WriteTable(candidates)
-            net.WriteFloat(voteTime)
-            net.WriteFloat(timer.TimeLeft('serverTime'))
-            net.Broadcast()
-            SendVotesToClient(playerVotes)
+            rmvBroadcastMapvote(RMV_NETWORK_STRINGS["startVote"], candidates, voteTime, timer.TimeLeft('serverTime'))
+            rmvBroadcastTable(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes)
         end
     end
 
@@ -117,7 +108,7 @@ if SERVER then
         local userChoice = net.ReadString()
         playerVotes[ply] = userChoice
         PrintTable(playerVotes)
-        SendVotesToClient(playerVotes)
+        rmvBroadcastTable(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes)
     end)
 
     Initialize()

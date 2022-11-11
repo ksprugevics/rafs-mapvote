@@ -130,9 +130,7 @@ if CLIENT then
             surface.PlaySound('buttons/button24.wav')
             selectedMap = 'random'
             RefreshThumbnailBackgrounds()
-            net.Start(RMV_NETWORK_STRINGS["userChoice"])
-            net.WriteString('random')
-            net.SendToServer()
+            rmvSendStringToServer(RMV_NETWORK_STRINGS["userChoice"], "random")
         end
     end
 
@@ -172,9 +170,7 @@ if CLIENT then
                 surface.PlaySound('buttons/button24.wav')
                 selectedMap = mapName
                 RefreshThumbnailBackgrounds()
-                net.Start(RMV_NETWORK_STRINGS["userChoice"])
-                net.WriteString(mapName)
-                net.SendToServer()
+                rmvSendStringToServer(RMV_NETWORK_STRINGS["userChoice"], mapName)
             end
         end
     end

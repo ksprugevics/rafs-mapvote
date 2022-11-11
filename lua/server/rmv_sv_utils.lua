@@ -61,13 +61,6 @@ if SERVER then
         return candidates
     end
 
-    -- Sends the newest votes to the client
-    function SendVotesToClient(playerVotes)
-        net.Start(RMV_NETWORK_STRINGS["refreshVotes"])
-        net.WriteTable(playerVotes)
-        net.Broadcast()
-    end
-
     -- Tallies the votes
     function TallyVotes(playerVotes, allMaps, noVoteToRandom)
 
