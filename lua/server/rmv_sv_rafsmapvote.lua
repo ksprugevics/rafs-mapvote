@@ -22,7 +22,7 @@ if SERVER then
         if #mapList < 6 then
             PrintTableRow('WARNING: Very small map pool! Things might break..')
         end
-
+        
 
         PrintTableRow('Loading map statistics..')
         local mapStats = GenerateMapCount(RMV_CONFIG['DATA_DIR'] .. 'map_stats.json', mapList)
@@ -32,6 +32,8 @@ if SERVER then
 
         PrintTableRow('Generating mapvote candidtes..')
         candidates = GenerateVoteCandidates(mapList, mapHistory, mapStats)
+        PrintTable(candidates)
+
         PrintTableRow("Fully loaded!")
         PrintTableFooter()
     end

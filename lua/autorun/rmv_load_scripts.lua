@@ -12,6 +12,7 @@ local function loadServerScripts()
     include("server/rmv_logging.lua")
     include("server/rmv_file_gen.lua")
     include("server/rmv_sv_utils.lua")
+    include("server/rmv_candidates.lua")
     include("server/rmv_sv_rafsmapvote.lua")
     include("server/rmv_rtv.lua")
 end
