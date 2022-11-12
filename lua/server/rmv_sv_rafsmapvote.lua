@@ -31,7 +31,7 @@ if SERVER then
         local mapHistory = GenerateMapHistory(RMV_CONFIG['DATA_DIR'] .. 'map_history.json', RMV_CONFIG['MAP_COOLDOWN'])
 
         PrintTableRow('Generating mapvote candidtes..')
-        candidates = GenerateVoteCandidates(mapList, mapHistory, mapStats)
+        candidates = generateVoteCandidates(mapList, mapHistory, mapStats)
         PrintTable(candidates)
 
         PrintTableRow("Fully loaded!")
@@ -56,7 +56,7 @@ if SERVER then
             mapVoteTimer = timer.Create('serverTime', voteTime, 1, function()
                 Log('Vote time ended.')
                 PrintTable(playerVotes)
-                nextMap = TallyVotes(playerVotes, candidates, noVotesAsRandom)
+                nextMap = processVotes(playerVotes, candidates, noVotesAsRandom)
                 rmvBroadcastString(RMV_NETWORK_STRINGS["nextMap"], nextMap)
                 started = false
                 Log('Changing map to: ' .. nextMap)

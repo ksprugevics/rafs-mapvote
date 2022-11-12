@@ -45,7 +45,7 @@ local function selectRandomMapsFromMapPool(sortedMapIndices, currentCandidates)
 end
 
 
-function GenerateVoteCandidates(maps, history, stats)
+function generateVoteCandidates(maps, history, stats)
     MAP_POOL = table.Copy(maps)
     if #MAP_POOL < 6 then return maps end
     deleteRecentMapsFromMapPool(history)
