@@ -38,9 +38,12 @@ if SERVER then
         PrintTableFooter()
     end
 
-    function StartRafsMapvote(customTimer, noVotesAsRandom)
+    function StartRafsMapvote(customTimer, votesRandom)
         local voteTime = customTimer or RMV_CONFIG['TIMER']
-        local noVotesAsRandom = noVotesAsRandom or RMV_CONFIG['NO_VOTE_TO_RANDOM']
+        local noVotesAsRandom = RMV_CONFIG['NO_VOTE_TO_RANDOM']
+        if votesRandom ~= nil then
+            noVotesAsRandom = votesRandom
+        end
         if started == false then
 
             -- Create a table that will contain player votes
