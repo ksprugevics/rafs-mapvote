@@ -47,6 +47,9 @@ end
 function processVotes(playerVotes, allMaps, noVoteToRandom)
     createVoteScoreArray(allMaps)
     countVotes(playerVotes, allMaps, noVoteToRandom)
+    if RMV_CONFIG["DEBUG_MODE"] then
+        PrintDebugTable("VOTE RESULTS", VOTE_SCORES)
+    end
     nextMap = selectLeader()
     return nextMap
 end

@@ -6,6 +6,11 @@ function Log(text)
     print("[Raf's Map Vote] " .. timestamp .. text)
 end
 
+function LogDebug(text)
+    local timestamp = os.date("%H:%M:%S: " , os.time())
+    print("[DEBUG] " .. timestamp .. text)
+end
+
 function PrintLogo()
     -- https://manytools.org/hacker-tools/ascii-banner/ (small, squeezed)
     print(" ___       __                              _             _   __  ")
@@ -51,4 +56,12 @@ function PrintCustomTable(rows)
         PrintTableRow(row, MAX_TABLE_ROW_LENGTH)
     end
     PrintTableFooter(MAX_TABLE_ROW_LENGTH)
+end
+
+function PrintDebugTable(title, table)
+    print("")
+    print(string.rep("-", 30) .. title .. string.rep("-", 30))
+    PrintTable(table)
+    print(string.rep("-", 60 + #title))
+    print("")
 end

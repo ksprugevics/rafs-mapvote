@@ -1,5 +1,5 @@
+RTV_SUCCESS = false
 local RTV_VOTES = {}
-local DELAY_ROUND = false
 
 
 local function canPlayerRTV(ply, text) 
@@ -23,12 +23,21 @@ end
 local function processRTVVote(ply)
     RTV_VOTES[ply] = 1
     if table.Count(RTV_VOTES) / #player.GetAll() >= RMV_CONFIG["RTV_PERCENT"] then
-        Log("RTV vote count reached. Starting mapvote after this round.")
-        PrintMessage(HUD_PRINTTALK, "[RTV] " .. ply:Name() .. " voted to rock the vote! Mapvote will start after the end of the round!")
-        DELAY_ROUND = true
+        if GAMEMODE_NAME == "terrortown" then
+            PrintMessage(HUD_PRINTTALK, "[RTV] " .. ply:Name() .. " voted to rock the vote! Mapvote will start after the end of the round!")
+            Log("RTV vote count reached. Starting mapvote after this round.")
+        else 
+            PrintMessage(HUD_PRINTTALK, "[RTV] " .. ply:Name() .. " voted to rock the vote! Starting mapvote!")
+            Log("RTV vote count reached. Starting mapvote.")
+            StartRafsMapvote()
+        end
+        RTV_SUCCESS = true
     else
         local playersNeeded = math.ceil(RMV_CONFIG["RTV_PERCENT"] * #player.GetAll()) - table.Count(RTV_VOTES)
         PrintMessage(HUD_PRINTTALK, "[RTV] " .. ply:Name() .. " voted to rock the vote! " .. playersNeeded .. " more player(s) needed to start a mapvote.")
+    end
+    if RMV_CONFIG["DEBUG_MODE"] then
+        PrintDebugTable("RTV VOTES", RTV_VOTES)
     end
 end
 
@@ -39,17 +48,12 @@ hook.Add("PlayerSay", "RMVRTV", function(ply, text)
     processRTVVote(ply)
 end)
 
-hook.Add("TTTDelayRoundStartForVote", "RMVDELAYROUND", function()
-    return DELAY_ROUND, 30
-end)
-
-hook.Add("TTTEndRound", "RMVRTVSTART", function()
-    StartRafsMapvote()
-end)
-
 hook.Add("PlayerDisconnected", "RMVRTVPLAYERLEAVE", function(ply)
     if RTV_VOTES[ply] ~= nil then 
         RTV_VOTES[ply] = nil
         Log(ply:Name() .. " left. Removing their RTV vote.")
+        if RMV_CONFIG["DEBUG_MODE"] then
+            PrintDebugTable("RTV VOTES", RTV_VOTES)
+        end
     end
 end)

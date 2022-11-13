@@ -1,5 +1,5 @@
 local function sendClientScripts()
-    AddCSLuaFile("autorun/rmv_load.lua")
+    AddCSLuaFile("autorun/rmv_load_scripts.lua")
     AddCSLuaFile("shared/rmv_network_strings.lua")
     AddCSLuaFile("client/gui/rmv_mapvote_panel_gui.lua")
     AddCSLuaFile("client/gui/rmv_fonts.lua")
@@ -15,7 +15,9 @@ local function loadServerScripts()
     include("server/voting/rmv_tally.lua")
     include("server/voting/rmv_candidates.lua")
     include("server/voting/rmv_rtv.lua")
+    include("server/rmv_init.lua")
     include("server/rmv_sv_rafsmapvote.lua")
+    include("server/integration/rmv_ttt.lua")
 end
 
 local function loadClientScripts()
