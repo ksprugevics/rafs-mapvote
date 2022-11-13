@@ -1,5 +1,4 @@
 # Raf's MapVote
-![Logo](materials/logo.png)
 <img src="materials/logo.png" alt="drawing" width="200"/>
 
 ## What is it?
