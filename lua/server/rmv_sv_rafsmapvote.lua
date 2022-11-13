@@ -12,11 +12,11 @@ if SERVER then
         SetTableRowSize(80)
         PrintLogo()
         PrintTableHeader()
-        RMV_CONFIG = SetupDataDir()
+        RMV_CONFIG = setupDataDir()
         PrintTableRow('Config loaded.')
 
         PrintTableRow('Generating map list..')
-        local mapList = GenerateMapList(RMV_CONFIG['MAPS'], RMV_CONFIG['MAP_PREFIX'])
+        local mapList = generateLocalMapList(RMV_CONFIG['MAPS'], RMV_CONFIG['MAP_PREFIX'])
         PrintTableRow('Found ' .. #mapList .. ' maps in total.')
         
         if #mapList < 6 then
@@ -25,10 +25,10 @@ if SERVER then
         
 
         PrintTableRow('Loading map statistics..')
-        local mapStats = GenerateMapCount(RMV_CONFIG['DATA_DIR'] .. 'map_stats.json', mapList)
+        local mapStats = generateMapStats(RMV_CONFIG['DATA_DIR'] .. 'map_stats.json', mapList)
 
         PrintTableRow('Loading map history..')
-        local mapHistory = GenerateMapHistory(RMV_CONFIG['DATA_DIR'] .. 'map_history.json', RMV_CONFIG['MAP_COOLDOWN'])
+        local mapHistory = generateMapHistory(RMV_CONFIG['DATA_DIR'] .. 'map_history.json', RMV_CONFIG['MAP_COOLDOWN'])
 
         PrintTableRow('Generating mapvote candidtes..')
         candidates = generateVoteCandidates(mapList, mapHistory, mapStats)

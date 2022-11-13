@@ -9,12 +9,13 @@ end
 
 local function loadServerScripts()
     include("shared/rmv_network_strings.lua")
-    include("server/rmv_logging.lua")
-    include("server/rmv_file_gen.lua")
-    include("server/rmv_tally.lua")
-    include("server/rmv_candidates.lua")
+    include("server/utils/rmv_logging.lua")
+    include("server/config/rmv_config.lua")
+    include("server/config/rmv_map_info.lua")
+    include("server/voting/rmv_tally.lua")
+    include("server/voting/rmv_candidates.lua")
+    include("server/voting/rmv_rtv.lua")
     include("server/rmv_sv_rafsmapvote.lua")
-    include("server/rmv_rtv.lua")
 end
 
 local function loadClientScripts()

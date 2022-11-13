@@ -1,5 +1,6 @@
 local MAX_TABLE_ROW_LENGTH = 80
 
+
 function Log(text)
     local timestamp = os.date("%H:%M:%S: " , os.time())
     print("[Raf's Map Vote] " .. timestamp .. text)
