@@ -1,5 +1,7 @@
 # Raf's MapVote
-<img src="materials/logo.png" alt="drawing" width="200"/>
+<p align="center">
+    <img src="materials/logo.png" alt="Logo" width="200"/>
+</p>
 
 ## What is it?
 
