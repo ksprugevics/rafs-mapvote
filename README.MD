@@ -1,9 +1,12 @@
 # Raf's MapVote
+<p align="center">
+    <img src="materials/logo.png" alt="Logo" width="200"/>
+</p>
+
 ## What is it?
 
 Raf's MapVote is an addon for Garry's Mod that allows players to vote for the next map to be played. This addon is specifically tailored to the Trouble in Terrorist Town (TTT) gamemode, but includes mechanisms to be used with other gamemodes.
 
-[IMAGE]
 
 ## Why?
 
