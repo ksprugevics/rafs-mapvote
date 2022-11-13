@@ -49,8 +49,8 @@ if CLIENT then
         end
         RMV_NEXT_MAP = net.ReadString()
         
-        surface.PlaySound('garrysmod/content_downloaded.wav')
-        TitleLabel:SetText('The winner is: ' .. RMV_NEXT_MAP)
+        surface.PlaySound("garrysmod/content_downloaded.wav")
+        TitleLabel:SetText("The winner is: " .. RMV_NEXT_MAP)
         TitleLabel:SizeToContents()
         
         RefreshThumbnailBackgrounds()
