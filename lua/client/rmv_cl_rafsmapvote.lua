@@ -23,7 +23,21 @@ if CLIENT then
         RMV_MAPS = net.ReadTable()
         RMV_TIMER_SECONDS = net.ReadFloat()
         RMV_TIMER_SECONDS_LEFT = net.ReadFloat()
-        InitGUI()
+        
+        if RMV_MAPVOTE_PANEL == nil then
+            InitGUI()
+        else 
+            RMV_MAPVOTE_PANEL:Show()
+        end
+    end)
+
+    
+    hook.Add("OnPlayerChat", "RMVREOPEN", function(_, text, _, _)
+        if text ~= "!rmvshow" then return end
+        if RMV_MAPVOTE_PANEL ~= nil then
+            RMV_MAPVOTE_PANEL:Show()
+            RMV_CLOSED = false
+        end
     end)
 
 
