@@ -69,6 +69,7 @@ If installed correctly, there should be a console output when starting the serve
 
 [TTT map icon pack by Kirays](https://steamcommunity.com/sharedfiles/filedetails/?id=2218062124)
 
+[Icons used](https://icons8.com/)
 
 ## Licence
 

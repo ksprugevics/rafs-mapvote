@@ -26,15 +26,16 @@ local LIGHT_MODE = false
 -- Colors
 local GUI_COLOR_DARK_BG = Color(50, 50, 50, 200)
 local GUI_COLOR_DARK_FG = Color(255, 255, 255, 255)
-local GUI_COLOR_LIGHT_BG = Color(255, 255, 255,180)
-local GUI_COLOR_LIGHT_FG = Color(0, 0, 0, 255)
-local GUI_BASE_PANEL_COLOR = GUI_COLOR_DARK_BG
-local GUI_BASE_TEXT_COLOR = GUI_COLOR_DARK_FG
+local GUI_COLOR_LIGHT_BG = Color(255, 255, 255, 255)
+local GUI_COLOR_LIGHT_FG = Color(0, 0, 0)
+
 
 -- Animations
 local GUI_UPDATE_INTERVAL = 0.01
 local GUI_FADE = 0
 local GUI_THUMBNAIL_SLIDE = {}
+local GUI_COLOR_BG = Color(50, 50, 50, 200)
+local GUI_COLOR_FG = Color(255, 255, 255, 255)
 
 -- Variables
 local thumbnails = {}
@@ -59,10 +60,10 @@ local function createMainPanel()
     frame.Paint = function(self, _w, _h)          
         Derma_DrawBackgroundBlur(self, SysTime() - math.Clamp(0, 1000, GUI_FADE))
         GUI_FADE = GUI_FADE + 0.005
-        draw.RoundedBox(0, GUI_STARTING_X, 0, _w, 45, GUI_BASE_PANEL_COLOR)
-        draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y - 5, _w + 15, GUI_THUMBNAIL_HEIGHT * 2 + 15, GUI_BASE_PANEL_COLOR)
-        draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5, (GUI_THUMBNAIL_WIDTH + 10) * 2 - 10, GUI_THUMBNAIL_HEIGHT / 3 + 13, GUI_BASE_PANEL_COLOR)
-        draw.RoundedBox(0, 0, 0, GUI_TIMER_PAD_WIDTH, GUI_TIMER_PAD_HEIGHT, GUI_BASE_PANEL_COLOR)
+        draw.RoundedBox(0, GUI_STARTING_X, 0, _w, 45, GUI_COLOR_BG)
+        draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y - 5, _w + 15, GUI_THUMBNAIL_HEIGHT * 2 + 15, GUI_COLOR_BG)
+        draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5, (GUI_THUMBNAIL_WIDTH + 10) * 2 - 10, GUI_THUMBNAIL_HEIGHT / 3 + 13, GUI_COLOR_BG)
+        draw.RoundedBox(0, 0, 0, GUI_TIMER_PAD_WIDTH, GUI_TIMER_PAD_HEIGHT, GUI_COLOR_BG)
     end       
     RMV_MAPVOTE_PANEL = frame
 end
@@ -86,14 +87,44 @@ local function createCloseButton()
     RMV_CLOSE_BUTTON = closeButton
 end
 
+
+local function colorAnimation(seconds)
+    local anim = Derma_Anim("ColorChangeAnimation", RMV_MAPVOTE_PANEL, function(pnl, anim, delta, data)
+        if LIGHT_MODE then
+            GUI_COLOR_BG.a = slideLerp(delta, GUI_COLOR_DARK_BG.a, GUI_COLOR_LIGHT_BG.a)
+            GUI_COLOR_BG.r = slideLerp(delta, GUI_COLOR_DARK_BG.r, GUI_COLOR_LIGHT_BG.r)
+            GUI_COLOR_BG.g = slideLerp(delta, GUI_COLOR_DARK_BG.g, GUI_COLOR_LIGHT_BG.g)
+            GUI_COLOR_BG.b = slideLerp(delta, GUI_COLOR_DARK_BG.b, GUI_COLOR_LIGHT_BG.b)
+            GUI_COLOR_FG.a = slideLerp(delta, GUI_COLOR_DARK_FG.a, GUI_COLOR_LIGHT_FG.a)
+            GUI_COLOR_FG.r = slideLerp(delta, GUI_COLOR_DARK_FG.r, GUI_COLOR_LIGHT_FG.r)
+            GUI_COLOR_FG.g = slideLerp(delta, GUI_COLOR_DARK_FG.g, GUI_COLOR_LIGHT_FG.g)
+            GUI_COLOR_FG.b = slideLerp(delta, GUI_COLOR_DARK_FG.b, GUI_COLOR_LIGHT_FG.b)
+        else
+            GUI_COLOR_BG.a = slideLerp(delta, GUI_COLOR_LIGHT_BG.a, GUI_COLOR_DARK_BG.a)
+            GUI_COLOR_BG.r = slideLerp(delta, GUI_COLOR_LIGHT_BG.r, GUI_COLOR_DARK_BG.r)
+            GUI_COLOR_BG.g = slideLerp(delta, GUI_COLOR_LIGHT_BG.g, GUI_COLOR_DARK_BG.g)
+            GUI_COLOR_BG.b = slideLerp(delta, GUI_COLOR_LIGHT_BG.b, GUI_COLOR_DARK_BG.b)
+            GUI_COLOR_FG.a = slideLerp(delta, GUI_COLOR_LIGHT_FG.a, GUI_COLOR_DARK_FG.a)
+            GUI_COLOR_FG.r = slideLerp(delta, GUI_COLOR_LIGHT_FG.r, GUI_COLOR_DARK_FG.r)
+            GUI_COLOR_FG.g = slideLerp(delta, GUI_COLOR_LIGHT_FG.g, GUI_COLOR_DARK_FG.g)
+            GUI_COLOR_FG.b = slideLerp(delta, GUI_COLOR_LIGHT_FG.b, GUI_COLOR_DARK_FG.b)
+        end
+    end)
+
+    anim:Start(seconds)
+    RMV_MAPVOTE_PANEL.Think = function(self)
+        if anim:Active() then
+            anim:Run()
+        end
+    end
+end
+
+
 local function changeColor()
+    colorAnimation(1)
     if LIGHT_MODE then
-        GUI_BASE_PANEL_COLOR = GUI_COLOR_LIGHT_BG
-        GUI_BASE_TEXT_COLOR = GUI_COLOR_LIGHT_FG
         RMV_CLOSE_BUTTON:SetImage("cross_black.png")
     else
-        GUI_BASE_PANEL_COLOR = GUI_COLOR_DARK_BG
-        GUI_BASE_TEXT_COLOR = GUI_COLOR_DARK_FG
         RMV_CLOSE_BUTTON:SetImage("cross_white.png")
     end
 end
@@ -103,16 +134,16 @@ local function createColorModeButton()
     if LIGHT_MODE then
         colorButton:SetImage("moon.png")
     else
-        colorButton:SetImage("sun.png")
+        colorButton:SetImage("sun_new.png")
     end
-    colorButton:SetPos(GUI_UI_WIDTH - 20, 7)
-    colorButton:SetSize(30, 30)
+    colorButton:SetPos(GUI_UI_WIDTH - 20, 8)
+    colorButton:SetSize(28, 28)
     colorButton.DoClick = function()
         LIGHT_MODE = not LIGHT_MODE
         if LIGHT_MODE then
             colorButton:SetImage("moon.png")
         else
-            colorButton:SetImage("sun.png")
+            colorButton:SetImage("sun_new.png")
         end
         changeColor()
     end
@@ -135,7 +166,7 @@ local function createTitleLabel(text)
     titleLabel:SetPos(GUI_STARTING_X + 10, 0)
     titleLabel:SizeToContents()
     titleLabel.Paint = function(self, _, _)
-        titleLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
+        titleLabel:SetTextColor(GUI_COLOR_FG)
     end   
     RMV_TITLE_LABEL = titleLabel
 end
@@ -147,11 +178,11 @@ local function createRandomButton()
     randomButton:SetText("Random map")
     randomButton:SetPos(xpos, ypos)
     randomButton:SetSize(GUI_THUMBNAIL_WIDTH + 15, GUI_THUMBNAIL_HEIGHT / 3 + 13)
-    randomButton:SetTextColor(GUI_BASE_TEXT_COLOR)
+    randomButton:SetTextColor(GUI_COLOR_FG)
     randomButton:SetFont("ButtonFont")
     randomButton.Paint = function(self, _w, _h)
-        randomButton:SetTextColor(GUI_BASE_TEXT_COLOR)
-        draw.RoundedBox(0, 0, 0, _w, _h, GUI_BASE_PANEL_COLOR)
+        randomButton:SetTextColor(GUI_COLOR_FG)
+        draw.RoundedBox(0, 0, 0, _w, _h, GUI_COLOR_BG)
     end
 
     GUI_THUMBNAIL_COORDS["random"] = {
@@ -169,8 +200,8 @@ local function createRandomButton()
     end
 end
 
-local function slideLerp(fraction, from, to)
-	return Lerp(math.ease.OutQuart(fraction), from, to)
+function slideLerp(fraction, from, to, inverted)
+    return Lerp(math.ease.OutQuart(fraction), from, to)
 end
 
 
@@ -181,22 +212,22 @@ local function createMapThumbnails()
         local MapLabel = vgui.Create("DLabel", RMV_MAPVOTE_PANEL)
 
         MapLabel:SetText("  " .. mapName)
-        MapLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
+        MapLabel:SetTextColor(GUI_COLOR_DARK_FG)
         MapLabel:SetFont("TextOverImageFont")
         MapLabel:SetSize(GUI_THUMBNAIL_WIDTH, 40)
         MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 48)
         MapLabel.Paint = function(sekf, _w, _h)
-            draw.RoundedBox(25, 3, 5, _w - 20, 36, GUI_COLOR_DARK_BG)
+            draw.RoundedBox(25, 3, 5, _w - 20, 36, Color(50, 50, 50, 200))
         end
         MapLabel:SetAlpha(0)
-        MapLabel:AlphaTo(255, 0.5, k * 0.5, function() end)
+        MapLabel:AlphaTo(255, 0.7, k * 0.5, function() end)
 
 
         MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, GUI_THUMBNAIL_COORDS[mapName][2] + 3)
         MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 6, GUI_THUMBNAIL_HEIGHT - 6)
         GUI_THUMBNAIL_SLIDE[mapName] = (6 - k) * 0.05
         MapVoteImage.Paint = function(self, _w, _h)
-            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, slideLerp(GUI_THUMBNAIL_SLIDE[mapName], -50, GUI_THUMBNAIL_COORDS[mapName][2] + 3))
+            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, slideLerp(GUI_THUMBNAIL_SLIDE[mapName], -200, GUI_THUMBNAIL_COORDS[mapName][2] + 3))
             GUI_THUMBNAIL_SLIDE[mapName] = math.Clamp(0, 1, GUI_THUMBNAIL_SLIDE[mapName] + 0.0025)
         end
 
@@ -306,7 +337,7 @@ local function createTimerBar(seconds, secondsLeft)
     panel:SetPos(5, GUI_TIMER_BAR_HEIGHT - panel:GetTall() + 5)
 
     panel.Paint = function(self, _w, _h)
-        draw.RoundedBox(0, 0, 0, _w, _h, GUI_BASE_TEXT_COLOR)
+        draw.RoundedBox(0, 0, 0, _w, _h, GUI_COLOR_FG)
     end
     
     timerBar = panel
