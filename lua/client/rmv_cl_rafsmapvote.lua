@@ -52,7 +52,7 @@ if CLIENT then
             local prev_vote = RMV_PLAYER_VOTES[pl]
             if prev_vote ~= vote then
                 RMV_PLAYER_VOTES[pl] = vote
-                RefreshAvatar(pl)
+                refreshAvatar(pl)
             end
         end
     end)
@@ -64,10 +64,10 @@ if CLIENT then
         RMV_NEXT_MAP = net.ReadString()
         
         surface.PlaySound("garrysmod/content_downloaded.wav")
-        TitleLabel:SetText("The winner is: " .. RMV_NEXT_MAP)
-        TitleLabel:SizeToContents()
+        RMV_TITLE_LABEL:SetText("The winner is: " .. RMV_NEXT_MAP)
+        RMV_TITLE_LABEL:SizeToContents()
         
-        RefreshThumbnailBackgrounds()
+        refreshThumbnailBackgrounds()
     end)
 
 end
