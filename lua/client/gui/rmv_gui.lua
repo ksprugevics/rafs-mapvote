@@ -1,5 +1,6 @@
 RMV_MAPVOTE_PANEL = nil
 RMV_CLOSE_BUTTON = nil
+RMV_TITLE_LABEL = nil
 
 -- Positions
 local GUI_STARTING_X = 55
@@ -33,6 +34,7 @@ local GUI_BASE_TEXT_COLOR = GUI_COLOR_DARK_FG
 -- Animations
 local GUI_UPDATE_INTERVAL = 0.01
 local GUI_FADE = 0
+local GUI_THUMBNAIL_SLIDE = {}
 
 -- Variables
 local thumbnails = {}
@@ -56,7 +58,7 @@ local function createMainPanel()
     frame:SetKeyboardInputEnabled(false)
     frame.Paint = function(self, _w, _h)          
         Derma_DrawBackgroundBlur(self, SysTime() - math.Clamp(0, 1000, GUI_FADE))
-        GUI_FADE = GUI_FADE + 0.01
+        GUI_FADE = GUI_FADE + 0.005
         draw.RoundedBox(0, GUI_STARTING_X, 0, _w, 45, GUI_BASE_PANEL_COLOR)
         draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y - 5, _w + 15, GUI_THUMBNAIL_HEIGHT * 2 + 15, GUI_BASE_PANEL_COLOR)
         draw.RoundedBox(0, GUI_STARTING_X, GUI_STARTING_Y + (GUI_THUMBNAIL_HEIGHT + 5) * 2 + 5, (GUI_THUMBNAIL_WIDTH + 10) * 2 - 10, GUI_THUMBNAIL_HEIGHT / 3 + 13, GUI_BASE_PANEL_COLOR)
@@ -135,6 +137,7 @@ local function createTitleLabel(text)
     titleLabel.Paint = function(self, _, _)
         titleLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
     end   
+    RMV_TITLE_LABEL = titleLabel
 end
 
 local function createRandomButton()
@@ -166,21 +169,36 @@ local function createRandomButton()
     end
 end
 
+local function slideLerp(fraction, from, to)
+	return Lerp(math.ease.OutQuart(fraction), from, to)
+end
+
+
 local function createMapThumbnails()
     for k, mapName in pairs(RMV_MAPS) do
 
         local MapVoteImage = vgui.Create("DImageButton", RMV_MAPVOTE_PANEL)
         local MapLabel = vgui.Create("DLabel", RMV_MAPVOTE_PANEL)
 
-        MapLabel:SetText(mapName)
+        MapLabel:SetText("  " .. mapName)
         MapLabel:SetTextColor(GUI_BASE_TEXT_COLOR)
         MapLabel:SetFont("TextOverImageFont")
         MapLabel:SetSize(GUI_THUMBNAIL_WIDTH, 40)
+        MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 48)
+        MapLabel.Paint = function(sekf, _w, _h)
+            draw.RoundedBox(25, 3, 5, _w - 20, 36, GUI_COLOR_DARK_BG)
+        end
+        MapLabel:SetAlpha(0)
+        MapLabel:AlphaTo(255, 0.5, k * 0.5, function() end)
+
 
         MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, GUI_THUMBNAIL_COORDS[mapName][2] + 3)
-        MapLabel:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 7, GUI_THUMBNAIL_COORDS[mapName][2] + GUI_THUMBNAIL_HEIGHT - 40)
         MapVoteImage:SetSize(GUI_THUMBNAIL_WIDTH - 6, GUI_THUMBNAIL_HEIGHT - 6)
-        
+        GUI_THUMBNAIL_SLIDE[mapName] = (6 - k) * 0.05
+        MapVoteImage.Paint = function(self, _w, _h)
+            MapVoteImage:SetPos(GUI_THUMBNAIL_COORDS[mapName][1] + 3, slideLerp(GUI_THUMBNAIL_SLIDE[mapName], -50, GUI_THUMBNAIL_COORDS[mapName][2] + 3))
+            GUI_THUMBNAIL_SLIDE[mapName] = math.Clamp(0, 1, GUI_THUMBNAIL_SLIDE[mapName] + 0.0025)
+        end
 
         local fileName = "maps/thumb/" .. mapName .. ".png"
 
@@ -339,7 +357,7 @@ function refreshThumbnailBackgrounds()
     end
 end
 
-function RefreshAvatar(ply)
+function refreshAvatar(ply)
     if allAvatars[ply] ~= nil then
         allAvatars[ply]:Remove()
         allAvatars[ply] = nil

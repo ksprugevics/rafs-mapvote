@@ -28,7 +28,7 @@ surface.CreateFont("TextOverImageFont", {
     size = 30,
     weight = 600,
     antialias = true,
-    shadow = true
+    centered= true
 })
 
 surface.CreateFont("Version font", {
