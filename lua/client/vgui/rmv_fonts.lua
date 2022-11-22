@@ -1,40 +1,40 @@
 surface.CreateFont("TitleFont", {
-    font = "Trebuchet24",
+    font = "Trebuchet MS",
     extended = true,
     size = 40,
     weight = 900,
-    antialias = true,
+    antialias = true
 })
 
 surface.CreateFont("ButtonFont", {
-    font = "Trebuchet24",
+    font = "Trebuchet MS",
     extended = true,
     size = 30,
     weight = 800,
-    antialias = true,
+    antialias = true
 })
 
 surface.CreateFont("XFont", {
-    font = "Trebuchet24",
+    font = "Trebuchet MS",
     extended = true,
     size = 40,
     weight = 6000,
-    antialias = true,
+    antialias = true
 })
 
 surface.CreateFont("TextOverImageFont", {
-    font = "Trebuchet24",
+    font = "Trebuchet MS",
     extended = true,
+    additive = true,
     size = 30,
-    weight = 600,
-    antialias = true,
-    centered= true
+    weight = 800,
+    antialias = true
 })
 
 surface.CreateFont("Version font", {
-    font = "Trebuchet24",
+    font = "Trebuchet MS",
     extended = true,
-    size = 15,
-    weight = 400,
-    antialias = true,
+    size = 18,
+    weight = 800,
+    antialias = true
 })

@@ -2,7 +2,8 @@ RMV_NETWORK_STRINGS   = {
     ["startVote"]     = "RMV_START_MAPVOTE",
     ["userChoice"]    = "RMV_MAP_CHOICE",
     ["refreshVotes"]  = "RMV_REFRESH_VOTES",
-    ["nextMap"]       = "RMV_NEXT_MAP"
+    ["nextMap"]       = "RMV_NEXT_MAP",
+    ["info"]          = "RMV_SEND_INFO"
 }
 
 local function checkIsValidNetworkString(networkString)
@@ -35,6 +36,13 @@ if SERVER then
         net.Broadcast()
     end
 
+    function rmvSendTableToClient(networkString, tableToSend, ply)
+        if not checkIsValidTable(tableToSend) or not checkIsValidNetworkString(networkString) then return end
+        net.Start(networkString)
+        net.WriteTable(tableToSend)
+        net.Send(ply)
+    end
+
     function rmvBroadcastMapvote(networkString, candidateMaps, totalVoteTime, remainingVoteTime)
         if not checkIsValidNetworkString(networkString) then return end
         if not checkIsValidTable(candidateMaps) then return end
@@ -44,6 +52,17 @@ if SERVER then
         net.WriteFloat(totalVoteTime)
         net.WriteFloat(remainingVoteTime)
         net.Broadcast()
+    end
+
+    function rmvSendVoteInfoToClient(networkString, candidateMaps, totalVoteTime, remainingVoteTime, ply)
+        if not checkIsValidNetworkString(networkString) then return end
+        if not checkIsValidTable(candidateMaps) then return end
+        if totalVoteTime == nil or remainingVoteTime == nil then return end
+        net.Start(networkString)
+        net.WriteTable(candidateMaps)
+        net.WriteFloat(totalVoteTime)
+        net.WriteFloat(remainingVoteTime)
+        net.Send(ply)
     end
 end
 

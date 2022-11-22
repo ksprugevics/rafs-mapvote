@@ -2,6 +2,7 @@ local candidates = {}
 local playerVotes = {}
 local nextMap = nil
 local voteStarted = false
+local totalVoteTime = nil
 local delay = false
 local mapVoteTimer = nil
 
@@ -48,19 +49,28 @@ local function createVoteTimer(voteTime, debug)
     voteStarted = true
 end
 
+local function sendVoteInfoToPlayer(ply)
+    rmvSendVoteInfoToClient(RMV_NETWORK_STRINGS["startVote"], candidates, totalVoteTime, timer.TimeLeft("RMV_VOTE_TIMER"), ply)
+    timer.Simple(2.7, function()
+        rmvSendTableToClient(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes, ply)
+    end)
+end
+
 
 function StartRafsMapvote(customTimer, votesRandom)
-    local voteTime, noVotesAsRandom = processCustomMapVoteParams(customTimer, votesRandom)
+    totalVoteTime, noVotesAsRandom = processCustomMapVoteParams(customTimer, votesRandom)
 
-    if voteStarted == true then
-        rmvBroadcastMapvote(RMV_NETWORK_STRINGS["startVote"], candidates, voteTime, timer.TimeLeft("RMV_VOTE_TIMER"))
-        rmvBroadcastTable(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes)
-    else
+    if voteStarted ~= true then
         createPlayerVotesArray()
-        createVoteTimer(voteTime, true)
-        rmvBroadcastMapvote(RMV_NETWORK_STRINGS["startVote"], candidates, voteTime, timer.TimeLeft("RMV_VOTE_TIMER"))
+        createVoteTimer(totalVoteTime, true)
+        rmvBroadcastMapvote(RMV_NETWORK_STRINGS["startVote"], candidates, totalVoteTime, timer.TimeLeft("RMV_VOTE_TIMER"))
     end
 end
+
+
+net.Receive(RMV_NETWORK_STRINGS["info"], function(len, ply)
+    sendVoteInfoToPlayer(ply)
+end)
 
 net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
     local newChoice = net.ReadString()
@@ -71,4 +81,3 @@ net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
     end
     rmvBroadcastTable(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes)
 end)
-
