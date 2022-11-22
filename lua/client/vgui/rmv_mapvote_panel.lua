@@ -129,7 +129,7 @@ end
 
 local function createCloseButton()
     local closeButton = vgui.Create("DImageButton", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
-    if _lightMode then
+    if RMV_CONVARS["rmv_lightmode"]:GetBool() then
         closeButton:SetImage("cross_black.png")
     else
         closeButton:SetImage("cross_white.png")
@@ -152,7 +152,7 @@ end
 
 local function colorChangeAnimation(seconds)
     local anim = Derma_Anim("RMVCOLORCHANGE", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL, function(pnl, anim, delta, data)
-        if _lightMode then
+        if RMV_CONVARS["rmv_lightmode"]:GetBool() then
             COLOR_BG.a = slideLerp(delta, COLOR_DARK_BG.a, COLOR_LIGHT_BG.a)
             COLOR_BG.r = slideLerp(delta, COLOR_DARK_BG.r, COLOR_LIGHT_BG.r)
             COLOR_BG.g = slideLerp(delta, COLOR_DARK_BG.g, COLOR_LIGHT_BG.g)
@@ -183,7 +183,7 @@ end
 
 local function createColorModeButton()
     local colorButton = vgui.Create("DImageButton", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
-    if _lightMode then
+    if RMV_CONVARS["rmv_lightmode"]:GetBool() then
         colorButton:SetImage("moon.png")
     else
         colorButton:SetImage("sun_new.png")
@@ -191,8 +191,8 @@ local function createColorModeButton()
     colorButton:SetPos(PANEL_WIDTH - 20, 8)
     colorButton:SetSize(28, 28)
     colorButton.DoClick = function()
-        _lightMode = not _lightMode
-        if _lightMode then
+        RMV_CONVARS["rmv_lightmode"]:SetBool(not RMV_CONVARS["rmv_lightmode"]:GetBool())
+        if RMV_CONVARS["rmv_lightmode"]:GetBool() then
             colorButton:SetImage("moon.png")
             RMV_GUI_ELEMENTS.RMV_CLOSE_BUTTON:SetImage("cross_black.png")
         else
@@ -513,6 +513,16 @@ function RMVRefreshAvatars(ply)
     initAvatarBounce(THUMBNAIL_COORDS[RMV_MAPVOTE_INFO.RMV_PLAYER_VOTES[ply]], ply)
 end
 
+local function initializeColor()
+    if RMV_CONVARS["rmv_lightmode"]:GetBool() then
+        COLOR_BG = Color(255, 255, 255, 255)
+        COLOR_FG = Color(0, 0, 0, 255)
+    else
+        COLOR_BG = Color(50, 50, 50, 200)
+        COLOR_FG = Color(255, 255, 255, 255)
+    end
+end
+
 local function reinstantiatePanel()
     _blurCounter = 0
     for k, mapName in pairs(RMV_MAPVOTE_INFO.RMV_CANDIDATES) do
@@ -524,6 +534,7 @@ local function reinstantiatePanel()
         RMVRefreshThumbnailBackgrounds()
     end)
 end
+
 
 function RMVShowMapvote()
     if RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL == nil then
@@ -546,7 +557,7 @@ function RMVShowMapvote()
     createTimerBar(RMV_MAPVOTE_INFO.RMV_TIMER_SECONDS, RMV_MAPVOTE_INFO.RMV_TIMER_SECONDS_LEFT)
     startTimer(RMV_MAPVOTE_INFO.RMV_TIMER_SECONDS)
     createMapLabels()
-
+    
     _bounceCounter = 0
     hook.Add("Think", "RMVAVATARBOUNCEUPDATE", function()
         if CurTime() < _bounceCounter or RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL == nil then
@@ -555,4 +566,6 @@ function RMVShowMapvote()
         updateAvatars()
         _bounceCounter = CurTime() + _updateInterval
     end)
+    
+    initializeColor()
 end
