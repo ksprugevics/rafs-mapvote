@@ -207,7 +207,7 @@ local function createRandomButton()
     local randomButton = vgui.Create("DButton", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
     local xpos = (THUMBNAIL_WIDTH + 5) * 2 + 60
     local ypos = STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5
-    randomButton:SetText("Random")
+    randomButton:SetText("Random map")
     randomButton:SetPos(xpos, ypos)
     randomButton:SetSize(THUMBNAIL_WIDTH / 2, THUMBNAIL_HEIGHT / 3 + 13)
     randomButton:SetZPos(5)
@@ -238,7 +238,7 @@ local function createExtendButton()
     local extendButton = vgui.Create("DButton", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
     local xpos = (THUMBNAIL_WIDTH + 5) * 2 + 60
     local ypos = STARTING_Y + (THUMBNAIL_HEIGHT + 5) * 2 + 5
-    extendButton:SetText("Extend")
+    extendButton:SetText("Extend map")
     extendButton:SetPos(xpos + THUMBNAIL_WIDTH / 2 + 5, ypos)
     extendButton:SetSize(THUMBNAIL_WIDTH / 2, THUMBNAIL_HEIGHT / 3 + 13)
     extendButton:SetTextColor(COLOR_FG)
