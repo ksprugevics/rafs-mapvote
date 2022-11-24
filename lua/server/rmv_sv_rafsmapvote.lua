@@ -72,6 +72,10 @@ net.Receive(RMV_NETWORK_STRINGS["info"], function(len, ply)
     sendVoteInfoToPlayer(ply)
 end)
 
+net.Receive(RMV_NETWORK_STRINGS["allMaps"], function(len, ply)
+    rmvSendMapListAndHistory(RMV_NETWORK_STRINGS["allMaps"], RMV_TOTAL_MAPLIST.MAPS, RMV_TOTAL_MAPLIST.HISTORY, ply)
+end)
+
 net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
     local newChoice = net.ReadString()
     local oldChoice = playerVotes[ply]

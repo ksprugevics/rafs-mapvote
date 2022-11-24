@@ -3,7 +3,8 @@ RMV_NETWORK_STRINGS   = {
     ["userChoice"]    = "RMV_MAP_CHOICE",
     ["refreshVotes"]  = "RMV_REFRESH_VOTES",
     ["nextMap"]       = "RMV_NEXT_MAP",
-    ["info"]          = "RMV_SEND_INFO"
+    ["info"]          = "RMV_SEND_INFO",
+    ["allMaps"]       = "RMV_SEND_ALL_MAPS"
 }
 
 local function checkIsValidNetworkString(networkString)
@@ -62,6 +63,16 @@ if SERVER then
         net.WriteTable(candidateMaps)
         net.WriteFloat(totalVoteTime)
         net.WriteFloat(remainingVoteTime)
+        net.Send(ply)
+    end
+
+    function rmvSendMapListAndHistory(networkString, maps, history, ply)
+        if not checkIsValidNetworkString(networkString) then return end
+        if not checkIsValidTable(maps) then return end
+        if not checkIsValidTable(history) then return end
+        net.Start(networkString)
+        net.WriteTable(maps)
+        net.WriteTable(history)
         net.Send(ply)
     end
 end

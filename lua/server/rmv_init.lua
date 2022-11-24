@@ -1,4 +1,7 @@
 RMV_CONFIG = {}
+RMV_TOTAL_MAPLIST = RMV_TOTAL_MAPLIST or {}
+RMV_TOTAL_MAPLIST.MAPS = {}
+RMV_TOTAL_MAPLIST.HISTORY = {}
 
 
 function RMV_INIT()
@@ -20,7 +23,8 @@ function RMV_INIT()
     
     PrintTableRow("Loading map history..")
     local mapHistory = generateMapHistory(RMV_CONFIG["DATA_DIR"] .. "map_history.json", RMV_CONFIG["MAP_COOLDOWN"])
-
+    RMV_TOTAL_MAPLIST.HISTORY = mapHistory
+    
     PrintTableRow("Generating mapvote candidtes..")
     candidates = generateVoteCandidates(mapList, mapHistory, mapStats)
 

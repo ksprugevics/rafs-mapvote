@@ -17,6 +17,9 @@ local function sortMapPoolByTimesPlayed(timesPlayed)
             
     local mapIndicesSorted = table.GetKeys(timesPlayed)
     table.sort(mapIndicesSorted, _sortByValue)
+    for k, map in pairs(mapIndicesSorted) do
+        RMV_TOTAL_MAPLIST.MAPS[k] = {["map"] = map, ["played"] = timesPlayed[map]}
+    end
     return mapIndicesSorted
 end
 

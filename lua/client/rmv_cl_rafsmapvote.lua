@@ -8,7 +8,6 @@ RMV_MAPVOTE_INFO.RMV_NEXT_MAP = nil
 RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED = false
 
 
-
 net.Receive(RMV_NETWORK_STRINGS["startVote"], function(len)
     RMV_MAPVOTE_INFO.RMV_NEXT_MAP = nil
     RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED = true
@@ -32,7 +31,6 @@ hook.Add("OnPlayerChat", "RMVREOPEN", function(_, text, _, _)
         rmvSendStringToServer(RMV_NETWORK_STRINGS["info"], "info")
     end
 end)
-
 
 -- Update avatars 
 net.Receive(RMV_NETWORK_STRINGS["refreshVotes"], function(len)

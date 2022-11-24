@@ -1,4 +1,4 @@
-surface.CreateFont("TitleFont", {
+surface.CreateFont("RMVTitleFont", {
     font = "Trebuchet MS",
     extended = true,
     size = 40,
@@ -6,7 +6,15 @@ surface.CreateFont("TitleFont", {
     antialias = true
 })
 
-surface.CreateFont("ButtonFont", {
+surface.CreateFont("RMVTitleFontList", {
+    font = "Trebuchet MS",
+    extended = true,
+    size = 50,
+    weight = 900,
+    antialias = true
+})
+
+surface.CreateFont("RMVButtonFont", {
     font = "Trebuchet MS",
     extended = true,
     size = 30,
@@ -14,15 +22,7 @@ surface.CreateFont("ButtonFont", {
     antialias = true
 })
 
-surface.CreateFont("XFont", {
-    font = "Trebuchet MS",
-    extended = true,
-    size = 40,
-    weight = 6000,
-    antialias = true
-})
-
-surface.CreateFont("TextOverImageFont", {
+surface.CreateFont("RMVTextOverImageFont", {
     font = "Trebuchet MS",
     extended = true,
     additive = true,
@@ -31,7 +31,25 @@ surface.CreateFont("TextOverImageFont", {
     antialias = true
 })
 
-surface.CreateFont("Version font", {
+surface.CreateFont("RMVTextOverImageFontStrikeout", {
+    font = "Trebuchet MS",
+    extended = true,
+    additive = true,
+    size = 30,
+    weight = 800,
+    antialias = true,
+})
+
+surface.CreateFont("RMVNumberFont", {
+    font = "Trebuchet MS",
+    extended = true,
+    additive = true,
+    size = 25,
+    weight = 800,
+    antialias = true
+})
+
+surface.CreateFont("RMVVersionFont", {
     font = "Trebuchet MS",
     extended = true,
     size = 18,
