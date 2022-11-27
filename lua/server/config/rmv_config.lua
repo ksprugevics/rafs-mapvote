@@ -32,7 +32,7 @@ local function generateDefaultConfig(fullPath)
     settings["THUMBNAIL_DIR"] = settings["DATA_DIR"] .. "thumbnails/"
 
     -- Number of maps before a map can show up on the mapvote again
-    settings["MAP_COOLDOWN"] = 3
+    settings["MAP_COOLDOWN"] = 5
 
     -- Voting period in seconds
     settings["TIMER"] = 35 + 1
@@ -45,6 +45,14 @@ local function generateDefaultConfig(fullPath)
 
     -- Time in seconds before RTV is allowed
     settings["RTV_TIME"] = 300
+
+    -- User groups that can force to start the mapvote from console using "rmv_start"
+    -- If server is running ulx, you probably want to ignore this and set permissions
+    -- for the "ulx rmvstart" command
+    settings["FORCE_VOTE_USER_GROUPS"] = {
+        "superadmin",
+        "admin"
+    }
 
     file.Write(fullPath, util.TableToJSON(settings))
 end

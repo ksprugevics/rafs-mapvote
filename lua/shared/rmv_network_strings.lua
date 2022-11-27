@@ -4,7 +4,8 @@ RMV_NETWORK_STRINGS   = {
     ["refreshVotes"]  = "RMV_REFRESH_VOTES",
     ["nextMap"]       = "RMV_NEXT_MAP",
     ["info"]          = "RMV_SEND_INFO",
-    ["allMaps"]       = "RMV_SEND_ALL_MAPS"
+    ["allMaps"]       = "RMV_SEND_ALL_MAPS",
+    ["requestMapVote"] = "RMV_REQUEST_MAP_VOTE"
 }
 
 local function checkIsValidNetworkString(networkString)

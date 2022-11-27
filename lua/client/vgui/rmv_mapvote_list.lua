@@ -253,6 +253,7 @@ local function createColorModeButton()
     end
     colorButton:SetPos(PANEL_WIDTH - 65, STARTING_Y - 9)
     colorButton:SetSize(28, 28)
+    colorButton.m_bDepressImage = false
     colorButton.DoClick = function()
         RMV_CONVARS["rmv_lightmode"]:SetBool(not RMV_CONVARS["rmv_lightmode"]:GetBool())
         if RMV_CONVARS["rmv_lightmode"]:GetBool() then

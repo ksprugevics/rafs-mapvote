@@ -190,6 +190,7 @@ local function createColorModeButton()
     end
     colorButton:SetPos(PANEL_WIDTH - 20, 8)
     colorButton:SetSize(28, 28)
+    colorButton.m_bDepressImage = false
     colorButton.DoClick = function()
         RMV_CONVARS["rmv_lightmode"]:SetBool(not RMV_CONVARS["rmv_lightmode"]:GetBool())
         if RMV_CONVARS["rmv_lightmode"]:GetBool() then
@@ -469,7 +470,7 @@ local function initAvatarBounce(thumbnailCoords, voter)
 
     local playerAvatar = bounceAvatars[voter]
     if  playerAvatar == nil then
-        playerAvatar = vgui.Create('AvatarImage', RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
+        playerAvatar = vgui.Create("AvatarImage", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
         playerAvatar:SetSize(AVATAR_THUMBNAIL_SIZE, AVATAR_THUMBNAIL_SIZE)
         playerAvatar:SetPlayer(voter, 64)
     end

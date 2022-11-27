@@ -71,6 +71,10 @@ If installed correctly, there should be a console output when starting the serve
 
 [Icons used](https://icons8.com/)
 
+## Commands
+
+!rmvlist !mappool !rmvpool !rtv !rmv [duration] [noVotesTorandomVotes] ulx rmvstart
+
 ## Convars
 - **rmv_lightmode 0/1** - Toggles the "light mode" color scheme.
 
