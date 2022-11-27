@@ -41,9 +41,9 @@ local function createVoteTimer(voteTime, debug)
         if RMV_CONFIG["DEBUG_MODE"] then
             PrintDebugTable("Player votes", playerVotes)
         end
-        -- timer.Simple(5, function()
-        --     RunConsoleCommand("changelevel", nextMap)
-        -- end)
+        timer.Simple(5, function()
+            RunConsoleCommand("changelevel", nextMap)
+        end)
     end)
     Log("Vote started.")
     voteStarted = true
@@ -72,6 +72,10 @@ net.Receive(RMV_NETWORK_STRINGS["info"], function(len, ply)
     sendVoteInfoToPlayer(ply)
 end)
 
+net.Receive(RMV_NETWORK_STRINGS["allMaps"], function(len, ply)
+    rmvSendMapListAndHistory(RMV_NETWORK_STRINGS["allMaps"], RMV_TOTAL_MAPLIST.MAPS, RMV_TOTAL_MAPLIST.HISTORY, ply)
+end)
+
 net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
     local newChoice = net.ReadString()
     local oldChoice = playerVotes[ply]
@@ -80,4 +84,12 @@ net.Receive(RMV_NETWORK_STRINGS["userChoice"], function(len, ply)
         LogDebug(ply:GetName() .. " changed their vote from: " .. oldChoice .. " to: " .. newChoice)
     end
     rmvBroadcastTable(RMV_NETWORK_STRINGS["refreshVotes"], playerVotes)
+end)
+
+net.Receive(RMV_NETWORK_STRINGS["requestMapVote"], function(len, ply)
+    if not table.HasValue(RMV_CONFIG["FORCE_VOTE_USER_GROUPS"], ply:GetUserGroup()) or voteStarted then
+        return
+    end
+    Log(ply:GetName() .. " started a mapvote from the console.")
+    StartRafsMapvote()
 end)

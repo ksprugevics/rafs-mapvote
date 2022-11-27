@@ -1,10 +1,12 @@
 local function sendClientScripts()
+    AddCSLuaFile("client/rmv_cl_cvars.lua")
     AddCSLuaFile("autorun/rmv_load_scripts.lua")
     AddCSLuaFile("shared/rmv_network_strings.lua")
     AddCSLuaFile("client/vgui/rmv_fonts.lua")
-    AddCSLuaFile("client/vgui/rmv_mapvote_panel.lua")
-    AddCSLuaFile("client/vgui/rmv_avatar_bounce.lua")
     AddCSLuaFile("client/rmv_cl_rafsmapvote.lua")
+    AddCSLuaFile("client/vgui/rmv_mapvote_panel.lua")
+    AddCSLuaFile("client/vgui/rmv_mapvote_list.lua")
+    AddCSLuaFile("client/rmv_chat_routines.lua")
 end
 
 local function loadServerScripts()
@@ -21,11 +23,13 @@ local function loadServerScripts()
 end
 
 local function loadClientScripts()
+    include("client/rmv_cl_cvars.lua")
     include("shared/rmv_network_strings.lua")
     include("client/vgui/rmv_fonts.lua")
-    include("client/vgui/rmv_mapvote_panel.lua")
-    include("client/vgui/rmv_avatar_bounce.lua")
     include("client/rmv_cl_rafsmapvote.lua")
+    include("client/vgui/rmv_mapvote_panel.lua")
+    include("client/vgui/rmv_mapvote_list.lua")
+    include("client/rmv_chat_routines.lua")
 end
 
 

@@ -8,7 +8,6 @@ RMV_MAPVOTE_INFO.RMV_NEXT_MAP = nil
 RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED = false
 
 
-
 net.Receive(RMV_NETWORK_STRINGS["startVote"], function(len)
     RMV_MAPVOTE_INFO.RMV_NEXT_MAP = nil
     RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED = true
@@ -33,7 +32,6 @@ hook.Add("OnPlayerChat", "RMVREOPEN", function(_, text, _, _)
     end
 end)
 
-
 -- Update avatars 
 net.Receive(RMV_NETWORK_STRINGS["refreshVotes"], function(len)
     if not RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL:IsVisible() then
@@ -55,7 +53,11 @@ net.Receive(RMV_NETWORK_STRINGS["nextMap"], function()
     end
     RMV_MAPVOTE_INFO.RMV_NEXT_MAP = net.ReadString()
     surface.PlaySound("garrysmod/content_downloaded.wav")
-    RMV_GUI_ELEMENTS.RMV_TITLE_LABEL:SetText("The winner is: " .. RMV_MAPVOTE_INFO.RMV_NEXT_MAP)
+    if RMV_MAPVOTE_INFO.RMV_NEXT_MAP == game.GetMap() then
+        RMV_GUI_ELEMENTS.RMV_TITLE_LABEL:SetText("The winner is: " .. RMV_MAPVOTE_INFO.RMV_NEXT_MAP .. " (extending current map)")
+    else
+        RMV_GUI_ELEMENTS.RMV_TITLE_LABEL:SetText("The winner is: " .. RMV_MAPVOTE_INFO.RMV_NEXT_MAP)
+        RMVRefreshThumbnailBackgrounds()
+    end
     RMV_GUI_ELEMENTS.RMV_TITLE_LABEL:SizeToContents()
-    RMVRefreshThumbnailBackgrounds()
 end)
