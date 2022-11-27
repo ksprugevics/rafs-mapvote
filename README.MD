@@ -65,7 +65,7 @@ If hosting a dedicated server you have to:
 - Add the addon to your [servers workshop collection](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers)
 - Add the addon workshop ID manually in _/garrysmod/lua/autorun/server/workshop.lua_ with **resource.AddWorkshop([ID])**
 
-This will make all clients download the addon automatically. It is also possible to download this repo (use [release branch]()) and place it in your server's _addons/_ directory but you are then responsible for sending the addon to the client.
+This will make all clients download the addon automatically. It is also possible to download this repo (check [releases](https://github.com/klavssprugevics/rafs-mapvote/releases)) and place it in your server's _addons/_ directory but you are then responsible for sending the addon to the client.
 
 It is also recommended to install a Map Icon pack like the one made by [Kirays](https://steamcommunity.com/sharedfiles/filedetails/?id=2218062124). However, keep in mind that Raf's MapVote uses landscape images, and most of the Map Icon packs are small square images, causing them to look a bit low-res. This should inspire you to create your own Map Icon pack with landscape images and share them with everyone :) 
 
