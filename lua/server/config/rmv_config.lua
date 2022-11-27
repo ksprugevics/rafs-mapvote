@@ -22,7 +22,7 @@ local function generateDefaultConfig(fullPath)
 
     -- Which maps to include in the map pool (prefix filter applies). Must be under garrysmod/maps/
     -- (The map should actually be in the directory for it to show up)
-    -- Adding/removing maps requires a restart of the server or a manual re-run of the server script
+    -- Adding/removing maps requires a restart of the server
     settings["MAPS"] = {
     }
 

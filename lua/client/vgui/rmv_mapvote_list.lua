@@ -249,7 +249,7 @@ local function createColorModeButton()
     if RMV_CONVARS["rmv_lightmode"]:GetBool() then
         colorButton:SetImage("moon.png")
     else
-        colorButton:SetImage("sun_new.png")
+        colorButton:SetImage("sun.png")
     end
     colorButton:SetPos(PANEL_WIDTH - 65, STARTING_Y - 9)
     colorButton:SetSize(28, 28)
@@ -260,7 +260,7 @@ local function createColorModeButton()
             colorButton:SetImage("moon.png")
             RMVcloseButton:SetImage("cross_black.png")
         else
-            colorButton:SetImage("sun_new.png")
+            colorButton:SetImage("sun.png")
             RMVcloseButton:SetImage("cross_white.png")
         end
         colorChangeAnimation(1)
