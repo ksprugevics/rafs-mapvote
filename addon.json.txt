@@ -1,13 +1,11 @@
 {
-	"title"		:	"Raf's Mapvote",
-	"version"   :   "1.0",
+	"title"		:	"Raf's MapVote",
 	"type"		:	"ServerContent",
-	"tags"		:	["realism" ],
+	"tags"		:	["realism", "roleplay"],
 	"ignore"	:
 	[
 		".git",
 		".vscode",
-		"LICENCE",
-		"README.MD"
+		"LICENCE"
 	]
 }
