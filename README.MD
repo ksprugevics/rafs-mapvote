@@ -1,6 +1,8 @@
 # Raf's MapVote
-<p align="center">
-    <img src="materials/logo.png" alt="Logo" width="200"/>
+<p float="left">
+    <img src="images/logo.png" alt="Logo" width="200"/>
+    <img src="images/map_pool.png" alt="Logo" width="200"/>
+    <img src="images/map_vote.png" alt="Logo" width="200"/>
 </p>
 
 ## What is it?
