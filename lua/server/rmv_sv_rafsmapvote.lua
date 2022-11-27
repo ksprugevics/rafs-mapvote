@@ -93,3 +93,7 @@ net.Receive(RMV_NETWORK_STRINGS["requestMapVote"], function(len, ply)
     Log(ply:GetName() .. " started a mapvote from the console.")
     StartRafsMapvote()
 end)
+
+concommand.Add("rmv_start", function()
+    StartRafsMapvote()
+end)

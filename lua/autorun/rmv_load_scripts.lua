@@ -32,9 +32,19 @@ local function loadClientScripts()
     include("client/rmv_chat_routines.lua")
 end
 
+local function sendMaterials()
+    -- You can probably get a table of these and make a loop
+    resource.AddFile("materials/clock.png")
+    resource.AddFile("materials/cross_black.png")
+    resource.AddFile("materials/cross_white.png")
+    resource.AddFile("materials/moon.png")
+    resource.AddFile("materials/no_thumbnail.png")
+    resource.AddFile("materials/sun.png")
+end
 
 if SERVER then
     sendClientScripts()
+    sendMaterials()
     loadServerScripts()
 end
 
