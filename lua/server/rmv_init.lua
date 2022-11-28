@@ -6,10 +6,8 @@ RMV_TOTAL_MAPLIST.HISTORY = {}
 
 function RMV_INIT()
     SetTableRowSize(80)
+    PrintLogo()
     PrintTableHeader()
-    PrintTableRow("Raf's MapVote v1.0.3")
-    PrintTableRow(string.rep("-", 40))
-    PrintTableRow("")
     RMV_CONFIG = setupDataDir()
     PrintTableRow("Config loaded.")
 

@@ -304,8 +304,8 @@ end
 
 local function createVLabel()
     local versionLabel = vgui.Create("DLabel", RMV_GUI_ELEMENTS.RMV_MAPVOTE_PANEL)
-    versionLabel:SetText("R" .. "a" .."f" .. "'" .. "s" .. "M" .. "a" .. "p" .. "V" .. "o" .. "t" .. "e" .. " " .. "v" .."1" .."." .. "0" .. "." .. "3")
-    versionLabel:SetPos(PANEL_WIDTH - 62, THUMBNAIL_COORDS["extend"][4] + 5)
+    versionLabel:SetText("R" .. "a" .."f" .. "'" .. "s" .. "M" .. "a" .. "p" .. "V" .. "o" .. "t" .. "e" .. " " .. "v" .."1" .."." .. "0")
+    versionLabel:SetPos(PANEL_WIDTH - 50, THUMBNAIL_COORDS["extend"][4] + 5)
     versionLabel:SetFont("RMVVersionFont")
     versionLabel:SetTextColor(Color(255, 255, 255, 200))
     versionLabel:SizeToContents()
