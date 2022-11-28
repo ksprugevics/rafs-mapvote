@@ -11,6 +11,15 @@ function LogDebug(text)
     print("[DEBUG] " .. timestamp .. text)
 end
 
+function PrintLogo()
+    -- https://manytools.org/hacker-tools/ascii-banner/ (small, squeezed)
+    print(" ___       __                              _             _   __  ")
+    print("| _ \\__ _ / _|___  _ __  __ _ _ ____ _____| |_ ___  __ _/ | /  \\") 
+    print("|   / _` |  _(_-< | '  \\/ _` | '_ \\ V / _ |  _/ -_) \\ V | || () |")
+    print("|_|_\\__,_|_| /__/ |_|_|_\\__,_| .__/\\_/\\___/\\__\\___|  \\_/|_(_\\__/ ")
+    print("                             |_|                                 ")
+end
+
 function SetTableRowSize(tableRowMaxLength)
     MAX_TABLE_ROW_LENGTH = tableRowMaxLength
 end
