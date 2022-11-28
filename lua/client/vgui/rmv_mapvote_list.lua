@@ -296,8 +296,9 @@ net.Receive(RMV_NETWORK_STRINGS["allMaps"], function()
     initMapList()
 end)
 
-hook.Add("OnPlayerChat", "RMVOPENMAPLIST", function(_, text, _, _)
+hook.Add("OnPlayerChat", "RMVOPENMAPLIST", function(ply, text, _, _)
     if text ~= "!rmvlist" and text ~= "!mappool" and text ~= "!rmvpool" then return end
+    if LocalPlayer() ~= ply then return end
     if RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED then
         return
     end
