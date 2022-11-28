@@ -5,8 +5,7 @@
 
 ## What is it?
 
-Raf's MapVote is a server addon for Garry's Mod that allows players to vote for the next map to be played. This addon is specifically tailored for the Trouble in Terrorist Town (TTT) gamemode, but includes admin commands to be manually started with any gamemode.
-
+Raf's MapVote is a server addon for Garry's Mod that allows players to vote for the next map to be played. This addon is specifically tailored for the Trouble in Terrorist Town (TTT) gamemode, but includes admin commands to be manually started with any gamemode. [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=2894778408)
 <p align="center">
     <img src="images/map_vote.png" alt="Logo" width="800"/>
 <p>
@@ -63,12 +62,12 @@ If hosting a local server, you and your friends should have the addon installed 
 If hosting a dedicated server you have to:
 
 - Add the addon to your [servers workshop collection](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers)
-- Add the addon workshop ID manually in _/garrysmod/lua/autorun/server/workshop.lua_ with **resource.AddWorkshop([ID])**
+- Add the addon workshop ID manually in _/garrysmod/lua/autorun/server/workshop.lua_ with **resource.AddWorkshop("2894778408")**
 
 
 This will make all clients download the addon automatically through the Steam Workshop.
 
-It is also possible to download this repo (check [releases](https://github.com/klavssprugevics/rafs-mapvote/releases)) and place it in your server's _addons/_ directory but you are then responsible for sending the custom thumbnails and icons in the _materials/_ folder, as only _*.lua_ files are sent automatically.
+It is also possible to download this repo (check [releases](https://github.com/klavssprugevics/rafs-mapvote/releases)) and place it in your server's _addons/_ directory but you are then responsible for sending the custom thumbnails.
 
 It is also recommended to install a Map Icon pack like the one made by [Kirays](https://steamcommunity.com/sharedfiles/filedetails/?id=2218062124). However, keep in mind that Raf's MapVote uses landscape images, and most of the Map Icon packs are small square images, causing them to look a bit low-res. This should inspire you to create your own Map Icon pack with landscape images and share them with everyone :) 
 
@@ -87,7 +86,7 @@ If installed correctly, there should be a console splash screen when starting th
 
 
 ## Links
-[Steam Workshop]()
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2894778408)
 
 [Adding a server workshop collection](https://wiki.facepunch.com/gmod/Workshop_for_Dedicated_Servers)
 
