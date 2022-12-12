@@ -370,7 +370,7 @@ local function createMapThumbnails()
         _thumbnailSlide[mapName] = (6 - k) * 0.05
         mapVoteImage.Paint = function(self, _w, _h)
             mapVoteImage:SetPos(THUMBNAIL_COORDS[mapName][1] + 3,
-                                slideLerp(_thumbnailSlide[mapName], -200,THUMBNAIL_COORDS[mapName][2] + 3))
+                                slideLerp(_thumbnailSlide[mapName], - ScrH() * 0.125,THUMBNAIL_COORDS[mapName][2] + 3))
             _thumbnailSlide[mapName] = math.Clamp(0, 1, _thumbnailSlide[mapName] + 0.0025)
         end
 
