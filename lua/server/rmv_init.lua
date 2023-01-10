@@ -7,7 +7,7 @@ RMV_TOTAL_MAPLIST.HISTORY = {}
 function RMV_INIT()
     SetTableRowSize(80)
     PrintTableHeader()
-    PrintTableRow("Raf's MapVote v1.0.3")
+    PrintTableRow("Raf's MapVote v1.0.5")
     PrintTableRow(string.rep("-", 40))
     PrintTableRow("")
     RMV_CONFIG = setupDataDir()
