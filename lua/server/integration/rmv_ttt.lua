@@ -14,19 +14,21 @@ hook.Add("TTTEndRound", "CheckMapvote", function()
 
         if rounds_left <= 0 then
             switchmap = true
-            Log("Round limit reached. Starting mapvote..")
+            Log("Round limit reached. Starting mapvote soon..")
         elseif time_left <= 0 then
             switchmap = true
-            Log("Time limit reached. Starting mapvote..")
+            Log("Time limit reached. Starting mapvote soon..")
         end
 
         if switchmap then
             timer.Stop("end2prep")
-            StartRafsMapvote()
+            timer.Simple(5, function()
+                StartRafsMapvote()
+            end)
         else
             LANG.Msg("limit_left", {num = rounds_left,
                             time = math.ceil(time_left / 60),
-                            mapname = nextmap})
+                            mapname = "the next map"})
         end
     end
 end)
