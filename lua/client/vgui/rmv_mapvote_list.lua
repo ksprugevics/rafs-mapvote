@@ -25,7 +25,6 @@ local COLOR_FG = Color(255, 255, 255, 255)
 -- Map list
 local mapList = {}
 
-
 local function createMaplistPanel()
     local frame = vgui.Create("DFrame")
     frame:SetTitle("")
@@ -279,7 +278,6 @@ local function initializeColor()
     end
 end
 
-
 local function initMapList()
     initializeColor()
     createMaplistPanel()
@@ -290,15 +288,7 @@ local function initMapList()
     createMapEntries(maps, history)
 end
 
-net.Receive(RMV_NETWORK_STRINGS["allMaps"], function()
-    maps = net.ReadTable()
-    history = net.ReadTable()
-    initMapList()
-end)
-
-hook.Add("OnPlayerChat", "RMVOPENMAPLIST", function(ply, text, _, _)
-    if text ~= "!rmvlist" and text ~= "!mappool" and text ~= "!rmvpool" then return end
-    if LocalPlayer() ~= ply then return end
+function rmvMapList()
     if RMV_MAPVOTE_INFO.RMV_MAPVOTE_STARTED then
         return
     end
@@ -311,4 +301,16 @@ hook.Add("OnPlayerChat", "RMVOPENMAPLIST", function(ply, text, _, _)
     if mapListPanel ~= nil then
         mapListPanel:Show()
     end
+end
+
+net.Receive(RMV_NETWORK_STRINGS["allMaps"], function()
+    maps = net.ReadTable()
+    history = net.ReadTable()
+    initMapList()
+end)
+
+hook.Add("OnPlayerChat", "RMVOPENMAPLIST", function(ply, text, _, _)
+    if text ~= "!rmvlist" and text ~= "!mappool" and text ~= "!rmvpool" then return end
+    if LocalPlayer() ~= ply then return end
+    rmvMapList()
 end)

@@ -83,6 +83,7 @@ If installed correctly, there should be a console splash screen when starting th
 - **rmv_lightmode 0/1** - Toggles the "light mode" color scheme.
 - **rmv_start** - Force starts the mapVote, if player is under a **FORCE\_VOTE\_USER\_GROUPS** (config) player group.
 - **ulx rmvstart [duration] [noVotesToRandomVotes]** - Force starts the mapvote through ULX (ULX custom permissions apply).
+- **rmv_list** Opens a map list window where the player can view the current server map pool.
 
 
 ## Links
@@ -100,4 +101,3 @@ This addon does not work in single player (and makes no sense to do so).
 ## Licence
 
 Feel free to use and modify the code to your own liking, following the guidelines of the MIT licence.
-
