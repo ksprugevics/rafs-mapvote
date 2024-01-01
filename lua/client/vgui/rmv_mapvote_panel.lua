@@ -462,7 +462,8 @@ local function nonZeroRandom(min, max)
     return temp
 end
 
-local function initAvatarBounce(thumbnailCoords, voter) 
+local function initAvatarBounce(thumbnailCoords, voter)
+    if thumbnailCoords == nil then return end
     local xmin = thumbnailCoords[1] + 3
     local ymin = thumbnailCoords[2] + 3
     local xmax = thumbnailCoords[3] - AVATAR_THUMBNAIL_SIZE - 3
